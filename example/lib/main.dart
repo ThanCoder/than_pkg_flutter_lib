@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:than_pkg/than_pkg_method_channel.dart';
+import 'package:than_pkg/than_pkg.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(const MyApp());
@@ -15,33 +15,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool isFullScreen = false;
+
   void _test() async {
     try {
       // String path = '/storage/emulated/0/test.pdf';
-
-      // final isGranted = await Permission.manageExternalStorage.isGranted;
-      // if (!isGranted) {
-      //   await Permission.manageExternalStorage.request();
-      // }
-
-      // final res = await ThanPkgMethodChannel.instance.getLocalIpAddress();
-      // final res2 = await ThanPkgMethodChannel.instance.getWifiAddress();
-      // final addrs = await ThanPkgMethodChannel.instance.getWifiAddressList();
-      // final res = await ThanPkgMethodChannel.instance
+      // await ThanPkg.platform
       //     .openUrl(url: 'https://www.youtube.com/watch?v=MIWte3C6vYw');
-      debugPrint('click');
-      setState(() {
-        isFullScreen = !isFullScreen;
-      });
 
-      await ThanPkgMethodChannel.instance
-          .toggleFullScreen(isFullScreen: isFullScreen);
+      // final res = await ThanPkg.platform.getPlatformVersion();
+      // final res = await ThanPkg.platform.getDeviceId();
+      // await ThanPkg.platform.toggleKeepScreen(isKeep: false);
+      // await ThanPkg.platform.toggleFullScreen(isFullScreen: !isFullScreen);
+      // final res = await ThanPkg.platform.isStoragePermissionGranted();
+      // if (!res) {
+      //   await ThanPkg.platform.requestStoragePermission();
+      // }
+      // print(res);
+      await ThanPkg.platform.checkAndRequestPackageInstallPermission();
+
+      // setState(() {
+      //   isFullScreen = !isFullScreen;
+      // });
     } catch (e) {
       debugPrint(e.toString());
     }
   }
-
-  bool isFullScreen = false;
 
   @override
   Widget build(BuildContext context) {
