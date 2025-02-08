@@ -23,16 +23,18 @@ class _MyAppState extends State<MyApp> {
       // await ThanPkg.platform
       //     .openUrl(url: 'https://www.youtube.com/watch?v=MIWte3C6vYw');
 
-      // final res = await ThanPkg.platform.getPlatformVersion();
-      // final res = await ThanPkg.platform.getDeviceId();
+      // await ThanPkg.platform.getPlatformVersion();
+      // await ThanPkg.platform.getDeviceId();
       // await ThanPkg.platform.toggleKeepScreen(isKeep: false);
       // await ThanPkg.platform.toggleFullScreen(isFullScreen: !isFullScreen);
-      // final res = await ThanPkg.platform.isStoragePermissionGranted();
-      // if (!res) {
-      //   await ThanPkg.platform.requestStoragePermission();
-      // }
-      // print(res);
-      await ThanPkg.platform.checkAndRequestPackageInstallPermission();
+      // await ThanPkg.platform.isStoragePermissionGranted();
+      // await ThanPkg.platform.requestStoragePermission();
+      // await ThanPkg.platform.checkAndRequestPackageInstallPermission();
+      // await ThanPkg.platform.getLocalIpAddress();
+      // await ThanPkg.platform.getWifiAddress();
+      // await ThanPkg.platform.getWifiAddressList();
+      // await ThanPkg.platform
+      //     .genPdfCover(outDirPath: outDirPath, pdfPathList: pdfPathList);
 
       // setState(() {
       //   isFullScreen = !isFullScreen;

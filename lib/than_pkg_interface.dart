@@ -14,6 +14,5 @@ abstract class ThanPkgInterface {
   Future<bool> isStoragePermissionGranted();
   Future<void> requestStoragePermission();
   Future<void> checkAndRequestPackageInstallPermission();
-  //android native
   Future<String?> getDeviceId();
 }
