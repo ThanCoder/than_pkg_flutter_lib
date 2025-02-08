@@ -1,7 +1,8 @@
 name: than_pkg
-description: "than_pkg -> android native plugin"
-version: 0.0.1
-homepage:
+description: android native plugin
+version: 0.0.3
+homepage: https://github.com/ThanCoder/than_pkg_flutter_lib
+repository: https://github.com/ThanCoder/than_pkg_flutter_lib
 
 environment:
   sdk: ^3.6.1
