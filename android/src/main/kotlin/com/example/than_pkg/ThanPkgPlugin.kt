@@ -4,6 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -40,9 +46,65 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 	}
 
 
-	@SuppressLint("HardwareIds", "NewApi")
+	@SuppressLint("HardwareIds", "NewApi", "SourceLockedOrientationActivity")
 	override fun onMethodCall(call: MethodCall, result: Result) {
 		when (call.method) {
+			"req_orientation" -> {
+				try {
+					val type = call.argument<String>("type") ?: "Portrait"
+					val isReverse = call.argument<Boolean>("reverse") ?: false
+					activity?.let {
+						if (type == "Portrait") {
+							if (isReverse) {
+								it.requestedOrientation = SCREEN_ORIENTATION_REVERSE_PORTRAIT
+							} else {
+								it.requestedOrientation = SCREEN_ORIENTATION_UNSPECIFIED
+							}
+						} else if (type == "Landscape") {
+							if (isReverse) {
+								it.requestedOrientation = SCREEN_ORIENTATION_REVERSE_LANDSCAPE
+							} else {
+								it.requestedOrientation = SCREEN_ORIENTATION_LANDSCAPE
+							}
+
+						}
+
+					}
+
+					result.success("")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"check_orientation" -> {
+				try {
+					val res = checkOrientation(context)
+					result.success(res)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"gen_video_thumbnail_list" -> {
+				try {
+					val pathList = call.argument<List<String>>("path_list") ?: listOf()
+					val outDirPath = call.argument<String>("out_dir_path") ?: ""
+					ThumbnailUtil.genVideoThumbnail(
+						outDirPath = outDirPath,
+						pathList = pathList,
+						onCreated = {
+							result.success("")
+						},
+						onError = { err ->
+							result.error("ERROR", err.toString(), err)
+						})
+
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
 
 			"check_req_package_install_permission" -> {
 				try {
@@ -180,67 +242,29 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 					})
 
 			}
-			"fingerprint" -> {
-				val res = Build.FINGERPRINT
-				result.success(res)
-			}
-			"soc_model" -> {
-				val res = Build.SOC_MODEL
-				result.success(res)
-			}
-			"model" -> {
-				val res = Build.MODEL
-				result.success(res)
-			}
-			"product" -> {
-				val res = Build.PRODUCT
-				result.success(res)
-			}
-			"manufacture" -> {
-				val res = Build.MANUFACTURER
-				result.success(res)
-			}
-			"hardware" -> {
-				val res = Build.HARDWARE
-				result.success(res)
-			}
-			"brand" -> {
-				val res = Build.BRAND
-				result.success(res)
-			}
-			"bootloader" -> {
-				val res = Build.BOOTLOADER
-				result.success(res)
-			}
-			"board" -> {
-				val res = Build.BOARD
-				result.success(res)
-			}
-			"release_or_codename" -> {
-				val res = Build.VERSION.RELEASE_OR_CODENAME
-				result.success(res)
-			}
-			"security_patch" -> {
-				val res = Build.VERSION.SECURITY_PATCH
-				result.success(res)
-			}
-			"preview_sdk_int" -> {
-				val res = Build.VERSION.PREVIEW_SDK_INT
-				result.success(res)
-			}
-			"sdk_int" -> {
-				val res = Build.VERSION.SDK_INT
-				result.success(res)
-			}
 
-			"base_os" -> {
-				val res = Build.VERSION.BASE_OS
-				result.success(res)
-			}
-
-			"codename" -> {
-				val res = Build.VERSION.CODENAME
-				result.success(res)
+			"get_android_device_info" -> {
+				try {
+					val obj = mapOf(
+						"fingerprint" to Build.FINGERPRINT,
+						"soc_model" to Build.SOC_MODEL,
+						"model" to Build.MODEL,
+						"product" to Build.PRODUCT,
+						"manufacture" to Build.MANUFACTURER,
+						"hardware" to Build.HARDWARE,
+						"bootloader" to Build.BOOTLOADER,
+						"board" to Build.BOARD,
+						"release_or_codename" to Build.VERSION.RELEASE_OR_CODENAME,
+						"security_patch" to Build.VERSION.SECURITY_PATCH,
+						"preview_sdk_int" to Build.VERSION.PREVIEW_SDK_INT,
+						"sdk_int" to Build.VERSION.SDK_INT,
+						"base_os" to Build.VERSION.BASE_OS,
+						"codename" to Build.VERSION.CODENAME,
+					)
+					result.success(obj)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
 			}
 
 			"getPlatformVersion" -> {

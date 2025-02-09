@@ -1,8 +1,52 @@
 import 'package:flutter/services.dart';
+import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class ThanPkgAndroid extends ThanPkg {
   final channel = const MethodChannel('than_pkg');
+
+  @override
+  Future<ScreenOrientationTypes?> checkScreenOrientation() async {
+    final res = await channel.invokeMethod<String>('check_orientation');
+    if (res == null) return null;
+    if (res == ScreenOrientationTypes.Portrait.name) {
+      return ScreenOrientationTypes.Portrait;
+    } else if (res == ScreenOrientationTypes.Landscape.name) {
+      return ScreenOrientationTypes.Landscape;
+    }
+    return null;
+  }
+
+  @override
+  Future<void> requestScreenOrientation({
+    required ScreenOrientationTypes type,
+    bool reverse = false,
+  }) async {
+    await channel.invokeMethod('req_orientation', {
+      'type': type.name,
+      'reverse': reverse,
+    });
+  }
+
+  @override
+  Future<void> genVideoCover({
+    required Comparable<String> outDirPath,
+    required List<String> videoPathList,
+    int iconSize = 300,
+  }) async {
+    await channel.invokeMethod('gen_video_thumbnail_list', {
+      'path_list': videoPathList,
+      'out_dir_path': outDirPath,
+      'icon_size': iconSize,
+    });
+  }
+
+  @override
+  Future<Map<String, dynamic>> getAndroidDeviceInfo() async {
+    final res = await channel.invokeMethod<Map>('get_android_device_info');
+    if (res == null) return {};
+    return Map<String, dynamic>.from(res);
+  }
 
   @override
   Future<bool> isStoragePermissionGranted() async {
@@ -60,8 +104,10 @@ class ThanPkgAndroid extends ThanPkg {
   }
 
   @override
-  Future<List?> getWifiAddressList() async {
-    return await channel.invokeMethod<List<dynamic>>('get_wifi_address_list');
+  Future<List<String>> getWifiAddressList() async {
+    final res = await channel.invokeMethod<List>('get_wifi_address_list');
+    if (res == null) return [];
+    return List<String>.from(res.map((obj) => obj.toString()));
   }
 
   @override

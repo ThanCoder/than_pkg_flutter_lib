@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:than_pkg/enums/screen_orientation_types.dart';
+import 'package:than_pkg/than_pkg.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +20,30 @@ class _MyAppState extends State<MyApp> {
 
   void _test() async {
     try {
-      // String path = '/storage/emulated/0/test.pdf';
+      //linux && android platform
+      // await ThanPkg.platform.getWifiAddressList();
+      // await ThanPkg.platform.genPdfCover(
+      //   outDirPath: '/home/thancoder/Downloads/novel_v3_out',
+      //   pdfPathList: [
+      //     '/home/thancoder/Downloads/novel_v3_out/test.pdf',
+      //     '/home/thancoder/Downloads/novel_v3_out/who is he  book 1 - 25.pdf',
+      //   ],
+      // );
+      // await ThanPkg.platform.genVideoCover(
+      //   outDirPath: '/home/thancoder/Downloads/novel_v3_out',
+      //   videoPathList: [
+      //     '/home/thancoder/Videos/2002.mp4',
+      //     '/home/thancoder/Videos/Live After.mp4',
+      //   ],
+      // );
+      // final res = await ThanPkg.platform.getAndroidDeviceInfo();
+      // final res = await ThanPkg.platform.getWifiAddressList();
+      // final res = await ThanPkg.platform.checkScreenOrientation();
+      await ThanPkg.platform
+          .requestScreenOrientation(type: ScreenOrientationTypes.Portrait);
+      // print(res);
+
+      //android platform
       // await ThanPkg.platform
       //     .openUrl(url: 'https://www.youtube.com/watch?v=MIWte3C6vYw');
 
@@ -31,7 +56,6 @@ class _MyAppState extends State<MyApp> {
       // await ThanPkg.platform.checkAndRequestPackageInstallPermission();
       // await ThanPkg.platform.getLocalIpAddress();
       // await ThanPkg.platform.getWifiAddress();
-      // await ThanPkg.platform.getWifiAddressList();
       // await ThanPkg.platform
       //     .genPdfCover(outDirPath: outDirPath, pdfPathList: pdfPathList);
 

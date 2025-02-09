@@ -1,6 +1,8 @@
 package com.example.than_pkg
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.view.View
 import android.view.Window
@@ -8,6 +10,15 @@ import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
 
+// Check the current screen orientation (Portrait or Landscape)
+fun checkOrientation(context:Context): String {
+	val orientation = context.resources.configuration.orientation
+	return if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+		"Portrait"
+	} else {
+		"Landscape"
+	}
+}
 
 fun toggleKeepScreenOn(window: Window, enable: Boolean) {
 	if (enable) {
