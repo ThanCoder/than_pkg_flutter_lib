@@ -1,9 +1,9 @@
-## 1.0.0
+## 1.0.3
 
 
 # linux
 
-# needed lib
+needed lib
     sudo apt install net-tools  // wifi
     sudo apt install poppler-utils //pdf thumbnail
     sudo apt install ffmpeg //video thumbnail

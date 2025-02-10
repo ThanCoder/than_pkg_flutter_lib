@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 void main() {
@@ -21,7 +20,6 @@ class _MyAppState extends State<MyApp> {
   void _test() async {
     try {
       //linux && android platform
-      // await ThanPkg.platform.getWifiAddressList();
       // await ThanPkg.platform.genPdfCover(
       //   outDirPath: '/home/thancoder/Downloads/novel_v3_out',
       //   pdfPathList: [
@@ -39,25 +37,24 @@ class _MyAppState extends State<MyApp> {
       // final res = await ThanPkg.platform.getAndroidDeviceInfo();
       // final res = await ThanPkg.platform.getWifiAddressList();
       // final res = await ThanPkg.platform.checkScreenOrientation();
-      await ThanPkg.platform
-          .requestScreenOrientation(type: ScreenOrientationTypes.Portrait);
+      // await ThanPkg.platform
+      //     .requestScreenOrientation(type: ScreenOrientationTypes.Portrait);
       // print(res);
 
       //android platform
       // await ThanPkg.platform
       //     .openUrl(url: 'https://www.youtube.com/watch?v=MIWte3C6vYw');
 
-      // await ThanPkg.platform.getPlatformVersion();
-      // await ThanPkg.platform.getDeviceId();
-      // await ThanPkg.platform.toggleKeepScreen(isKeep: false);
-      // await ThanPkg.platform.toggleFullScreen(isFullScreen: !isFullScreen);
-      // await ThanPkg.platform.isStoragePermissionGranted();
-      // await ThanPkg.platform.requestStoragePermission();
-      // await ThanPkg.platform.checkAndRequestPackageInstallPermission();
-      // await ThanPkg.platform.getLocalIpAddress();
-      // await ThanPkg.platform.getWifiAddress();
-      // await ThanPkg.platform
-      //     .genPdfCover(outDirPath: outDirPath, pdfPathList: pdfPathList);
+      await ThanPkg.platform.getPlatformVersion();
+      await ThanPkg.platform.getDeviceId();
+      await ThanPkg.platform.toggleKeepScreen(isKeep: false);
+      await ThanPkg.platform.toggleFullScreen(isFullScreen: !isFullScreen);
+      await ThanPkg.platform.isStoragePermissionGranted();
+      await ThanPkg.platform.requestStoragePermission();
+      await ThanPkg.platform.checkAndRequestPackageInstallPermission();
+      await ThanPkg.platform.getLocalIpAddress();
+      await ThanPkg.platform.getWifiAddress();
+      await ThanPkg.platform.getAndroidDeviceInfo();
 
       // setState(() {
       //   isFullScreen = !isFullScreen;
