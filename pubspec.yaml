@@ -1,9 +1,9 @@
 name: than_pkg
-description: android native plugin.it is my personal lib and you can use.this is my first lib.so is will bugs.
+description: android native plugin.it is my personal lib and you can use.this is my first lib.
 version: 1.3.0
 homepage: https://github.com/ThanCoder/than_pkg_flutter_lib
 repository: https://github.com/ThanCoder/than_pkg_flutter_lib
-publish_to: none
+publish_to: https://pub.dev
 
 environment:
   sdk: ^3.6.1
