@@ -3,7 +3,7 @@ description: android native plugin.it is my personal lib and you can use.this is
 version: 1.3.0
 homepage: https://github.com/ThanCoder/than_pkg_flutter_lib
 repository: https://github.com/ThanCoder/than_pkg_flutter_lib
-publish_to: https://pub.dev
+publish_to: none
 
 environment:
   sdk: ^3.6.1
