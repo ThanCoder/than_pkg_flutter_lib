@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 
-
 /// Generate video thumbnail at a random timestamp
-Future<void> generateVideoRandomThumbnail(String videoPath, String outputPath) async {
+Future<void> generateVideoRandomThumbnail(
+    String videoPath, String outputPath) async {
   int? duration = await getVideoDuration(videoPath);
   if (duration == null || duration < 1) {
     print("Invalid duration. Cannot generate thumbnail.");
@@ -12,15 +12,12 @@ Future<void> generateVideoRandomThumbnail(String videoPath, String outputPath) a
 
   // Generate a random time within video duration
   int randomTime = Random().nextInt(duration);
-  String timeFormat = "00:${(randomTime ~/ 60).toString().padLeft(2, '0')}:${(randomTime % 60).toString().padLeft(2, '0')}";
+  String timeFormat =
+      "00:${(randomTime ~/ 60).toString().padLeft(2, '0')}:${(randomTime % 60).toString().padLeft(2, '0')}";
 
   try {
-    ProcessResult result = await Process.run('ffmpeg', [
-      '-i', videoPath,
-      '-ss', timeFormat,
-      '-vframes', '1',
-      outputPath
-    ]);
+    ProcessResult result = await Process.run('ffmpeg',
+        ['-i', videoPath, '-ss', timeFormat, '-vframes', '1', outputPath]);
 
     if (result.exitCode == 0) {
       print("Thumbnail generated at $timeFormat: $outputPath");
@@ -32,16 +29,19 @@ Future<void> generateVideoRandomThumbnail(String videoPath, String outputPath) a
   }
 }
 
-
 /// Get video duration in seconds
 Future<int?> getVideoDuration(String videoPath) async {
   try {
     ProcessResult result = await Process.run('ffmpeg', [
-      '-i', videoPath,
+      '-i',
+      videoPath,
       '-hide_banner',
-      '-print_format', 'json',
-      '-show_entries', 'format=duration',
-      '-v', 'quiet'
+      '-print_format',
+      'json',
+      '-show_entries',
+      'format=duration',
+      '-v',
+      'quiet'
     ]);
 
     if (result.exitCode == 0) {
