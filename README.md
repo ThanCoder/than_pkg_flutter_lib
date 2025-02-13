@@ -1,25 +1,30 @@
-## 1.1.0
-
+## 1.3.0
 
 # linux
 
-needed lib
+# needed lib from linux
+
     sudo apt install net-tools  // wifi
     sudo apt install poppler-utils //pdf thumbnail
     sudo apt install ffmpeg //video thumbnail
 
-
 # android && linux
-      await ThanPkg.platform.getWifiAddressList();
-      await ThanPkg.platform.genPdfCover(outDirPath: '', pdfPathList: []);
-      await ThanPkg.platform.genVideoCover(outDirPath: '', videoPathList: []);
+
+    //new method
+    await ThanPkg.platform.getAppRootPath();
+    await ThanPkg.platform.getAppExternalPath();
+
+    await ThanPkg.platform.getWifiAddressList();
+    await ThanPkg.platform.genPdfCover(outDirPath: '', pdfPathList: []);
+    await ThanPkg.platform.genVideoCover(outDirPath: '', videoPathList: []);
 
 # android only
+
     အသုံးပြုနိုင်တဲ့ Methods များ
 
     await ThanPkg.platform.checkScreenOrientation();
     await ThanPkg.platform.requestScreenOrientation(type: ScreenOrientationTypes.Portrait);
-    
+
     //android device info <Map> type
     await ThanPkg.platform.getAndroidDeviceInfo()
 
@@ -37,6 +42,7 @@ needed lib
     await ThanPkg.platform.getWifiAddress();
 
 # android AndroidManifest
+
     //need permission
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

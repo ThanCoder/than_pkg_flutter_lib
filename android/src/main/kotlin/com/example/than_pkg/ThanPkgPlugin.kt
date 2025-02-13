@@ -49,6 +49,22 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 	@SuppressLint("HardwareIds", "NewApi", "SourceLockedOrientationActivity")
 	override fun onMethodCall(call: MethodCall, result: Result) {
 		when (call.method) {
+			"get_app_root_path" ->{
+				try {
+					val res = context.getExternalFilesDir(null)
+
+					result.success(res?.path)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+			"get_app_external_path" ->{
+				try {
+					result.success("/storage/emulated/0")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
 			"req_orientation" -> {
 				try {
 					val type = call.argument<String>("type") ?: "Portrait"

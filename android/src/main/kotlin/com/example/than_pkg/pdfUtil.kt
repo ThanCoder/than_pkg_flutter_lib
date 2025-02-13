@@ -48,7 +48,7 @@ fun genPdfCoverList(
 				pdfRenderer.close()
 
 				// PNG ဖိုင်အဖြစ် Save
-				val pngFile = File(outDir, "${pdfFile.name}.png")
+				val pngFile = File(outDir, "${pdfFile.name.split(".").first()}.png")
 				FileOutputStream(pngFile).use { outputStream ->
 					bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
 					outputStream.flush()

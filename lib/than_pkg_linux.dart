@@ -5,6 +5,16 @@ import 'package:than_pkg/than_pkg.dart';
 
 class ThanPkgLinux extends ThanPkg {
   @override
+  Future<String?> getAppRootPath() async {
+    return Directory.current.path;
+  }
+
+  @override
+  Future<String?> getAppExternalPath() async {
+    return Platform.environment['HOME'] ?? '';
+  }
+
+  @override
   Future<void> genVideoCover({
     required Comparable<String> outDirPath,
     required List<String> videoPathList,

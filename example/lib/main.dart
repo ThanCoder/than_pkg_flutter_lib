@@ -20,6 +20,8 @@ class _MyAppState extends State<MyApp> {
   void _test() async {
     try {
       //linux && android platform
+      await ThanPkg.platform.getAppRootPath();
+      await ThanPkg.platform.getAppExternalPath();
       // await ThanPkg.platform.genPdfCover(
       //   outDirPath: '/home/thancoder/Downloads/novel_v3_out',
       //   pdfPathList: [
@@ -45,16 +47,16 @@ class _MyAppState extends State<MyApp> {
       // await ThanPkg.platform
       //     .openUrl(url: 'https://www.youtube.com/watch?v=MIWte3C6vYw');
 
-      await ThanPkg.platform.getPlatformVersion();
-      await ThanPkg.platform.getDeviceId();
-      await ThanPkg.platform.toggleKeepScreen(isKeep: false);
-      await ThanPkg.platform.toggleFullScreen(isFullScreen: !isFullScreen);
-      await ThanPkg.platform.isStoragePermissionGranted();
-      await ThanPkg.platform.requestStoragePermission();
-      await ThanPkg.platform.checkAndRequestPackageInstallPermission();
-      await ThanPkg.platform.getLocalIpAddress();
-      await ThanPkg.platform.getWifiAddress();
-      await ThanPkg.platform.getAndroidDeviceInfo();
+      // await ThanPkg.platform.getPlatformVersion();
+      // await ThanPkg.platform.getDeviceId();
+      // await ThanPkg.platform.toggleKeepScreen(isKeep: false);
+      // await ThanPkg.platform.toggleFullScreen(isFullScreen: !isFullScreen);
+      // await ThanPkg.platform.isStoragePermissionGranted();
+      // await ThanPkg.platform.requestStoragePermission();
+      // await ThanPkg.platform.checkAndRequestPackageInstallPermission();
+      // await ThanPkg.platform.getLocalIpAddress();
+      // await ThanPkg.platform.getWifiAddress();
+      // await ThanPkg.platform.getAndroidDeviceInfo();
 
       // setState(() {
       //   isFullScreen = !isFullScreen;

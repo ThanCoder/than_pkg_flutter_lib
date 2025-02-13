@@ -6,6 +6,18 @@ class ThanPkgAndroid extends ThanPkg {
   final channel = const MethodChannel('than_pkg');
 
   @override
+  Future<String?> getAppRootPath() async {
+    final res = await channel.invokeMethod<String>('get_app_root_path');
+    return res;
+  }
+
+  @override
+  Future<String?> getAppExternalPath() async {
+    final res = await channel.invokeMethod<String>('get_app_external_path');
+    return res;
+  }
+
+  @override
   Future<ScreenOrientationTypes?> checkScreenOrientation() async {
     final res = await channel.invokeMethod<String>('check_orientation');
     if (res == null) return null;

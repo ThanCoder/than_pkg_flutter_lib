@@ -5,8 +5,4 @@ abstract class ThanPkgPlatform extends PlatformInterface {
   ThanPkgPlatform() : super(token: _token);
 
   static final Object _token = Object();
-
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
 }

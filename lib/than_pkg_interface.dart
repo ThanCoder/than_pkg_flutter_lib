@@ -30,4 +30,7 @@ abstract class ThanPkgInterface {
   Future<String?> getLocalIpAddress();
   Future<String?> getWifiAddress();
   Future<void> toggleKeepScreen({required bool isKeep});
+  //add
+  Future<String?> getAppRootPath();
+  Future<String?> getAppExternalPath();
 }
