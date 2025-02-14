@@ -5,6 +5,11 @@ import 'package:than_pkg/than_pkg.dart';
 
 class ThanPkgLinux extends ThanPkg {
   @override
+  Future<bool> isAppSystemThemeDarkMode() async {
+    return false;
+  }
+
+  @override
   Future<String?> getAppRootPath() async {
     return Directory.current.path;
   }

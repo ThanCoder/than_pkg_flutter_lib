@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:than_pkg/than_pkg.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,8 +19,17 @@ class _MyAppState extends State<MyApp> {
   void _test() async {
     try {
       //linux && android platform
-      await ThanPkg.platform.getAppRootPath();
-      await ThanPkg.platform.getAppExternalPath();
+      // final res = await ThanPkg.platform.isAppSystemThemeDarkMode();
+      // final res = await ThanPkg.platform.getAppFilePath();
+      // final res = await ThanPkg.platform.isAppInternetConnected();
+      // final res = await ThanPkg.platform.getAppBatteryLevel();
+      // final res = await ThanPkg.platform.getLastKnownLocation();
+      // final res = await ThanPkg.platform.getInstalledApps();
+
+      // print(res);
+
+      // await ThanPkg.platform.getAppRootPath();
+      // await ThanPkg.platform.getAppExternalPath();
       // await ThanPkg.platform.genPdfCover(
       //   outDirPath: '/home/thancoder/Downloads/novel_v3_out',
       //   pdfPathList: [

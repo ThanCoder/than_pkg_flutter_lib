@@ -6,6 +6,49 @@ class ThanPkgAndroid extends ThanPkg {
   final channel = const MethodChannel('than_pkg');
 
   @override
+  Future<String?> getWifiSSID() async {
+    final res = await channel.invokeMethod<String>('get_wifi_SSID');
+    return res;
+  }
+
+  @override
+  Future<List<Map>> getInstalledApps() async {
+    final res = await channel.invokeMethod<List>('get_installed_apps');
+    if (res == null) return [];
+    return res.map((map) => Map<String, String>.from(map)).toList();
+  }
+
+  @override
+  Future<Map> getLastKnownLocation() async {
+    final res = await channel.invokeMethod<Map>('get_last_known_location');
+    return res ?? {};
+  }
+
+  @override
+  Future<int> getAppBatteryLevel() async {
+    final res = await channel.invokeMethod<int>('get_battery_level');
+    return res ?? -1;
+  }
+
+  @override
+  Future<bool> isAppInternetConnected() async {
+    final res = await channel.invokeMethod<bool>('is_internet_connected');
+    return res ?? false;
+  }
+
+  @override
+  Future<bool> isAppSystemThemeDarkMode() async {
+    final res = await channel.invokeMethod<bool>('is_system_dark_mode');
+    return res ?? false;
+  }
+
+  @override
+  Future<String?> getAppFilePath() async {
+    final res = await channel.invokeMethod<String>('get_app_file_path');
+    return res;
+  }
+
+  @override
   Future<String?> getAppRootPath() async {
     final res = await channel.invokeMethod<String>('get_app_root_path');
     return res;

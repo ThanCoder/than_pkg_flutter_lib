@@ -467,4 +467,69 @@ class ThanPkg implements ThanPkgInterface {
     // TODO: implement getAppExternalPath
     throw UnimplementedError();
   }
+
+  @override
+  Future<bool> isAppSystemThemeDarkMode() {
+    // TODO: implement isAppSystemThemeDarkMode
+    throw UnimplementedError();
+  }
+
+  /// Returns the file path where the app can store files.
+  ///
+  /// This method retrieves the app's designated file storage directory,
+  /// which may vary based on the platform.
+  ///
+  /// **Platform-specific behavior:**
+  /// - On Android, this could be the app's internal storage directory.
+  ///
+  /// Returns:
+  /// - A `Future<String?>` resolving to the file storage path.
+  /// - Throws an `UnimplementedError` if the method is not implemented.
+  ///
+  /// **Example Output**
+  ///
+  /// ```data/user/0/com.example.than_pkg_example/files```
+  ///
+  /// Example:
+  /// ```dart
+  /// String? path = await getAppFilePath();
+  /// if (path != null) {
+  ///   print("App file path: $path");
+  /// }
+  /// ```
+  @override
+  Future<String?> getAppFilePath() {
+    // TODO: implement getAppFilePath
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Map>> getInstalledApps() {
+    // TODO: implement getInstalledApps
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map> getLastKnownLocation() {
+    // TODO: implement getLastKnownLocation
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> getWifiSSID() {
+    // TODO: implement getWifiSSID
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> isAppInternetConnected() {
+    // TODO: implement isAppInternetConnected
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> getAppBatteryLevel() {
+    // TODO: implement getAppBatteryLevel
+    throw UnimplementedError();
+  }
 }

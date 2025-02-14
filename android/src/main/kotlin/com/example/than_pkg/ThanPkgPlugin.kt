@@ -10,7 +10,12 @@ import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+import android.content.res.Configuration
+import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.net.Uri
+import android.net.wifi.WifiManager
+import android.os.BatteryManager
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.NonNull
@@ -46,25 +51,130 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 	}
 
 
-	@SuppressLint("HardwareIds", "NewApi", "SourceLockedOrientationActivity")
+	@SuppressLint("HardwareIds", "NewApi", "SourceLockedOrientationActivity", "MissingPermission")
 	override fun onMethodCall(call: MethodCall, result: Result) {
 		when (call.method) {
-			"get_app_root_path" ->{
+//			"" -> {
+//				try {
+//					val res = ""
+//
+//					result.success(res)
+//				} catch (err: Exception) {
+//					result.error("ERROR", err.toString(), err)
+//				}
+//			}
+			"get_wifi_SSID" -> {
+				try {
+
+					val wifiManager =
+						context.applicationContext?.getSystemService(Context.WIFI_SERVICE) as WifiManager
+					val wifiInfo = wifiManager.connectionInfo
+					result.success(wifiInfo.ssid)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"get_installed_apps" -> {
+				try {
+
+					val packageManager = context.packageManager
+					val packages = packageManager?.getInstalledApplications(0)?.map {
+						mapOf(
+							"packageName" to it.packageName,
+							"appName" to packageManager.getApplicationLabel(it).toString()
+						)
+					}
+					result.success(packages)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"get_last_known_location" -> {
+				try {
+					val locationManager =
+						context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+					val location =
+						locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+					if (location != null) {
+						val locationData = mapOf(
+							"latitude" to location.latitude,
+							"longitude" to location.longitude
+						)
+						result.success(locationData)
+					} else {
+						result.error("LOCATION_ERROR", "Location not available", null)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"get_battery_level" -> {
+				try {
+					val batteryManager =
+						context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+					val batteryLevel =
+						batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+					result.success(batteryLevel)
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"is_internet_connected" -> {
+				try {
+
+					val connectivityManager =
+						context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+					val networkInfo = connectivityManager.activeNetworkInfo
+					result.success(networkInfo?.isConnected == true)
+
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"is_system_dark_mode" -> {
+				try {
+					val isDarkMode =
+						(context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
+					result.success(isDarkMode)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"get_app_file_path" -> {
+				try {
+					val res = context.filesDir
+					result.success(res.path)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"get_app_root_path" -> {
 				try {
 					val res = context.getExternalFilesDir(null)
-
 					result.success(res?.path)
 				} catch (err: Exception) {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
-			"get_app_external_path" ->{
+
+			"get_app_external_path" -> {
 				try {
 					result.success("/storage/emulated/0")
 				} catch (err: Exception) {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
+
 			"req_orientation" -> {
 				try {
 					val type = call.argument<String>("type") ?: "Portrait"
