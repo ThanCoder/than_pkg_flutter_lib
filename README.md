@@ -1,4 +1,4 @@
-## 1.5.0
+## 1.5.1
 
 # needed lib from linux
 
@@ -9,9 +9,11 @@
 # Android && linux
 
     //new method
+    await ThanPkg.windowManagerensureInitialized();
+    await ThanPkg.platform.toggleFullScreen(isFullScreen: true);
+
     await ThanPkg.platform.getAppRootPath();
     await ThanPkg.platform.getAppExternalPath();
-
     await ThanPkg.platform.getWifiAddressList();
     await ThanPkg.platform.genPdfCover(outDirPath: '', pdfPathList: []);
     await ThanPkg.platform.genVideoCover(outDirPath: '', videoPathList: []);

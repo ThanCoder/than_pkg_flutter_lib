@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:than_pkg/than_pkg.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ThanPkg.windowManagerensureInitialized();
 
   runApp(const MyApp());
 }
@@ -18,6 +20,10 @@ class _MyAppState extends State<MyApp> {
 
   void _test() async {
     try {
+      setState(() {
+        isFullScreen = !isFullScreen;
+      });
+      await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
       //linux && android platform
       // final res = await ThanPkg.platform.isAppSystemThemeDarkMode();
       // final res = await ThanPkg.platform.getAppFilePath();

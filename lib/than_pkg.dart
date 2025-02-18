@@ -4,8 +4,13 @@ import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg_android.dart';
 import 'package:than_pkg/than_pkg_interface.dart';
 import 'package:than_pkg/than_pkg_linux.dart';
+import 'package:window_manager/window_manager.dart';
 
 class ThanPkg implements ThanPkgInterface {
+  static Future<void> windowManagerensureInitialized() async {
+    await windowManager.ensureInitialized();
+  }
+
   static ThanPkg get platform => _createInstance();
 
   static ThanPkg _createInstance() {

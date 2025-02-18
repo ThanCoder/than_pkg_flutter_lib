@@ -2,8 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:than_pkg/than_pkg.dart';
+import 'package:window_manager/window_manager.dart';
 
 class ThanPkgLinux extends ThanPkg {
+  @override
+  Future<void> toggleFullScreen({required bool isFullScreen}) async {
+    await windowManager.setFullScreen(isFullScreen);
+  }
+
   @override
   Future<bool> isAppSystemThemeDarkMode() async {
     return false;
