@@ -6,6 +6,11 @@ import 'package:window_manager/window_manager.dart';
 
 class ThanPkgLinux extends ThanPkg {
   @override
+  Future<bool> isStoragePermissionGranted() async {
+    return true;
+  }
+
+  @override
   Future<void> toggleFullScreen({required bool isFullScreen}) async {
     await windowManager.setFullScreen(isFullScreen);
   }
@@ -62,7 +67,8 @@ class ThanPkgLinux extends ThanPkg {
         final name = pdfPath.split('/').last;
         final outputPath = '$outDirPath/${name.split('.').first}';
         final outImageFile = File(outputPath);
-        if (await outImageFile.exists()) {
+        final oldImagePath = '${outImageFile.path}.png';
+        if (await File(oldImagePath).exists()) {
           continue;
         }
         await Process.run('pdftoppm',

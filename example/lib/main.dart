@@ -20,10 +20,14 @@ class _MyAppState extends State<MyApp> {
 
   void _test() async {
     try {
-      setState(() {
-        isFullScreen = !isFullScreen;
-      });
-      await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
+      // setState(() {
+      //   isFullScreen = !isFullScreen;
+      // });
+      // await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
+      await ThanPkg.platform.genPdfCover(
+          outDirPath: '/home/thancoder/Documents',
+          pdfPathList: ['/home/thancoder/Documents/test.pdf']);
+      print('success');
       //linux && android platform
       // final res = await ThanPkg.platform.isAppSystemThemeDarkMode();
       // final res = await ThanPkg.platform.getAppFilePath();

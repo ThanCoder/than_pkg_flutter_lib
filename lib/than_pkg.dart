@@ -8,7 +8,9 @@ import 'package:window_manager/window_manager.dart';
 
 class ThanPkg implements ThanPkgInterface {
   static Future<void> windowManagerensureInitialized() async {
-    await windowManager.ensureInitialized();
+    if (Platform.isLinux) {
+      await windowManager.ensureInitialized();
+    }
   }
 
   static ThanPkg get platform => _createInstance();

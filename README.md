@@ -1,5 +1,3 @@
-## 1.5.1
-
 # needed lib from linux
 
     sudo apt install net-tools  // wifi
@@ -52,6 +50,7 @@
 # android AndroidManifest
 
     //need permission
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
