@@ -1,4 +1,4 @@
-package com.example.than_pkg
+package than.plugin.than_pkg
 
 import android.annotation.SuppressLint
 import android.content.Context

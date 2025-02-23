@@ -1,3 +1,4 @@
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 
 abstract class ThanPkgInterface {
@@ -40,4 +41,6 @@ abstract class ThanPkgInterface {
   Future<Map> getLastKnownLocation();
   Future<List<Map>> getInstalledApps();
   Future<String?> getWifiSSID();
+
+  Future<PackageInfo> getPackageInfo();
 }

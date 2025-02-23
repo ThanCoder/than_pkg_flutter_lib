@@ -1,12 +1,10 @@
-package com.example.than_pkg
+package than.plugin.than_pkg
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -18,7 +16,6 @@ import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
 import android.provider.Settings
-import androidx.annotation.NonNull
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -27,7 +24,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import thancoder.pkg.thancoder_pkg.genPdfCoverList
 
 /** ThanPkgPlugin */
 class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {

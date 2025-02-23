@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg_android.dart';
 import 'package:than_pkg/than_pkg_interface.dart';
@@ -29,6 +30,8 @@ class ThanPkg implements ThanPkgInterface {
   ///
   /// This function processes the given list of PDF file paths and generates
   /// their cover images, saving them to the specified output directory.
+  ///
+  /// for linux -> `sudo apt install poppler-utils`
   ///
   /// ### Parameters:
   /// - [outDirPath] (required): The directory path where the generated cover images will be saved.
@@ -286,6 +289,8 @@ class ThanPkg implements ThanPkgInterface {
 
   /// Retrieves a list of available Wi-Fi IP addresses.
   ///
+  /// for linux -> `sudo apt install poppler-utils`
+  ///
   /// This function scans and returns a list of IP addresses
   /// associated with available Wi-Fi networks. The returned list
   /// may contain multiple IP addresses if the device is connected
@@ -312,6 +317,8 @@ class ThanPkg implements ThanPkgInterface {
   ///
   /// This function processes the given list of video file paths and extracts
   /// their cover images (thumbnails), saving them to the specified output directory.
+  ///
+  /// for linux -> `sudo apt install ffmpeg`
   ///
   /// ### Parameters:
   /// - [outDirPath] (required): The directory path where the generated thumbnails will be saved.
@@ -538,5 +545,10 @@ class ThanPkg implements ThanPkgInterface {
   Future<int> getAppBatteryLevel() {
     // TODO: implement getAppBatteryLevel
     throw UnimplementedError();
+  }
+
+  @override
+  Future<PackageInfo> getPackageInfo() async {
+    return await PackageInfo.fromPlatform();
   }
 }

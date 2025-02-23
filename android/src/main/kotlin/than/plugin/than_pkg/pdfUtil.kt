@@ -1,4 +1,4 @@
-package thancoder.pkg.thancoder_pkg
+package than.plugin.than_pkg
 
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer

@@ -1,4 +1,4 @@
-package com.example.than_pkg
+package than.plugin.than_pkg
 
 
 import android.graphics.Bitmap
@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.os.Handler
 import android.os.Looper
+import android.text.TextUtils.split
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -20,15 +21,16 @@ object ThumbnailUtil {
 	fun genVideoThumbnail(pathList: List<String>,outDirPath:String, onCreated:()-> Unit,onError:(err: Exception)-> Unit) {
 		executorService.execute {
 			try {
-				for (vp in pathList) {
-					val outPath = "$outDirPath/${vp.split(".").first()}.png"
+				for (path in pathList) {
+					val pngFile = File(path)
+					val outPath = "$outDirPath/${pngFile.name.split(".").first()}.png"
 					//already exists continue
 					if(File(outPath).exists()) continue
 
 					val retriever = MediaMetadataRetriever()
-					retriever.setDataSource(vp)
+					retriever.setDataSource(path)
 
-					val bitmap = retriever.getFrameAtTime(getRandomTime(vp), MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+					val bitmap = retriever.getFrameAtTime(getRandomTime(path), MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
 					retriever.release()
 
 					bitmap?.let {

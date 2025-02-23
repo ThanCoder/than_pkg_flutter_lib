@@ -23,11 +23,23 @@ class _MyAppState extends State<MyApp> {
       // setState(() {
       //   isFullScreen = !isFullScreen;
       // });
+      if (!await ThanPkg.platform.isStoragePermissionGranted()) {
+        await ThanPkg.platform.requestStoragePermission();
+        return;
+      }
+
+      await ThanPkg.platform
+          .genVideoCover(outDirPath: '/storage/emulated/0', videoPathList: [
+        '/storage/emulated/0/test.mp4',
+      ]);
+      // print(await ThanPkg.platform.getAppExternalPath());
+      print('succc');
       // await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
-      await ThanPkg.platform.genPdfCover(
-          outDirPath: '/home/thancoder/Documents',
-          pdfPathList: ['/home/thancoder/Documents/test.pdf']);
-      print('success');
+      // await ThanPkg.platform.genPdfCover(
+      //     outDirPath: '/home/thancoder/Documents',
+      //     pdfPathList: ['/home/thancoder/Documents/test.pdf']);
+      // final res = await ThanPkg.platform.getPackageInfo();
+
       //linux && android platform
       // final res = await ThanPkg.platform.isAppSystemThemeDarkMode();
       // final res = await ThanPkg.platform.getAppFilePath();

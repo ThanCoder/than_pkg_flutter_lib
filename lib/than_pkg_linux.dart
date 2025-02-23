@@ -11,6 +11,9 @@ class ThanPkgLinux extends ThanPkg {
   }
 
   @override
+  Future<void> toggleKeepScreen({required bool isKeep}) async {}
+
+  @override
   Future<void> toggleFullScreen({required bool isFullScreen}) async {
     await windowManager.setFullScreen(isFullScreen);
   }

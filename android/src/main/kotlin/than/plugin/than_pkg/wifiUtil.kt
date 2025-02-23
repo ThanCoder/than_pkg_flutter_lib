@@ -1,10 +1,5 @@
-@file:Suppress("DEPRECATION")
+package than.plugin.than_pkg
 
-package com.example.than_pkg
-
-import android.content.Context
-import android.net.wifi.WifiManager
-import android.text.format.Formatter
 import java.net.InetAddress
 import java.net.NetworkInterface
 import java.util.Enumeration
