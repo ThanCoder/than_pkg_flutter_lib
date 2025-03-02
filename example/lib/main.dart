@@ -18,79 +18,23 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool isFullScreen = false;
 
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    await ThanPkg.android.app.toggleKeepScreenOn(isKeep: true);
+  }
+
   void _test() async {
     try {
-      // setState(() {
-      //   isFullScreen = !isFullScreen;
-      // });
-      if (!await ThanPkg.platform.isStoragePermissionGranted()) {
-        await ThanPkg.platform.requestStoragePermission();
+      if (!await ThanPkg.android.permission.isStoragePermissionGranted()) {
+        await ThanPkg.android.permission.requestStoragePermission();
         return;
       }
-
-      await ThanPkg.platform
-          .genVideoCover(outDirPath: '/storage/emulated/0', videoPathList: [
-        '/storage/emulated/0/test.mp4',
-      ]);
-      // print(await ThanPkg.platform.getAppExternalPath());
-      print('succc');
-      // await ThanPkg.platform.toggleFullScreen(isFullScreen: isFullScreen);
-      // await ThanPkg.platform.genPdfCover(
-      //     outDirPath: '/home/thancoder/Documents',
-      //     pdfPathList: ['/home/thancoder/Documents/test.pdf']);
-      // final res = await ThanPkg.platform.getPackageInfo();
-
-      //linux && android platform
-      // final res = await ThanPkg.platform.isAppSystemThemeDarkMode();
-      // final res = await ThanPkg.platform.getAppFilePath();
-      // final res = await ThanPkg.platform.isAppInternetConnected();
-      // final res = await ThanPkg.platform.getAppBatteryLevel();
-      // final res = await ThanPkg.platform.getLastKnownLocation();
-      // final res = await ThanPkg.platform.getInstalledApps();
-
-      // print(res);
-
-      // await ThanPkg.platform.getAppRootPath();
-      // await ThanPkg.platform.getAppExternalPath();
-      // await ThanPkg.platform.genPdfCover(
-      //   outDirPath: '/home/thancoder/Downloads/novel_v3_out',
-      //   pdfPathList: [
-      //     '/home/thancoder/Downloads/novel_v3_out/test.pdf',
-      //     '/home/thancoder/Downloads/novel_v3_out/who is he  book 1 - 25.pdf',
-      //   ],
-      // );
-      // await ThanPkg.platform.genVideoCover(
-      //   outDirPath: '/home/thancoder/Downloads/novel_v3_out',
-      //   videoPathList: [
-      //     '/home/thancoder/Videos/2002.mp4',
-      //     '/home/thancoder/Videos/Live After.mp4',
-      //   ],
-      // );
-      // final res = await ThanPkg.platform.getAndroidDeviceInfo();
-      // final res = await ThanPkg.platform.getWifiAddressList();
-      // final res = await ThanPkg.platform.checkScreenOrientation();
-      // await ThanPkg.platform
-      //     .requestScreenOrientation(type: ScreenOrientationTypes.Portrait);
-      // print(res);
-
-      //android platform
-      // await ThanPkg.platform
-      //     .openUrl(url: 'https://www.youtube.com/watch?v=MIWte3C6vYw');
-
-      // await ThanPkg.platform.getPlatformVersion();
-      // await ThanPkg.platform.getDeviceId();
-      // await ThanPkg.platform.toggleKeepScreen(isKeep: false);
-      // await ThanPkg.platform.toggleFullScreen(isFullScreen: !isFullScreen);
-      // await ThanPkg.platform.isStoragePermissionGranted();
-      // await ThanPkg.platform.requestStoragePermission();
-      // await ThanPkg.platform.checkAndRequestPackageInstallPermission();
-      // await ThanPkg.platform.getLocalIpAddress();
-      // await ThanPkg.platform.getWifiAddress();
-      // await ThanPkg.platform.getAndroidDeviceInfo();
-
-      // setState(() {
-      //   isFullScreen = !isFullScreen;
-      // });
+      await ThanPkg.android.camera.openCamera();
     } catch (e) {
       debugPrint(e.toString());
     }

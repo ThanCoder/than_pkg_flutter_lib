@@ -24,6 +24,16 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import than.plugin.than_pkg.AppUtil.checkOrientation
+import than.plugin.than_pkg.AppUtil.hideFullScreen
+import than.plugin.than_pkg.AppUtil.showFullScreen
+import than.plugin.than_pkg.AppUtil.toggleKeepScreenOn
+import than.plugin.than_pkg.PdfUtil.genPdfCoverList
+import than.plugin.than_pkg.PermissionUtil.isStoragePermissionGranted
+import than.plugin.than_pkg.PermissionUtil.requestStoragePermission
+import than.plugin.than_pkg.WifiUtil.getLocalIpAddress
+import than.plugin.than_pkg.WifiUtil.getWifiAddress
+import than.plugin.than_pkg.WifiUtil.getWifiAddressList
 
 /** ThanPkgPlugin */
 class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -39,41 +49,52 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 		channel = MethodChannel(flutterPluginBinding.binaryMessenger, "than_pkg")
 		channel.setMethodCallHandler(this)
 		context = flutterPluginBinding.applicationContext
-
 	}
 
 	override fun onAttachedToActivity(binding: ActivityPluginBinding) {
 		activity = binding.activity
+		//listen activity result
+		binding.addActivityResultListener { reqCode, resultCode, data ->
+			channel.invokeMethod(
+				"onActivityResult", mapOf(
+					"requestCode" to reqCode,
+					"resultCode" to resultCode,
+					"data" to data?.toString(),
+				)
+			)
+			true
+		}
 	}
 
 
 	@SuppressLint("HardwareIds", "NewApi", "SourceLockedOrientationActivity", "MissingPermission")
 	override fun onMethodCall(call: MethodCall, result: Result) {
 		when (call.method) {
-//			"" -> {
-//				try {
-//					val res = ""
-//
-//					result.success(res)
-//				} catch (err: Exception) {
-//					result.error("ERROR", err.toString(), err)
-//				}
-//			}
-			"get_wifi_SSID" -> {
-				try {
 
-					val wifiManager =
-						context.applicationContext?.getSystemService(Context.WIFI_SERVICE) as WifiManager
-					val wifiInfo = wifiManager.connectionInfo
-					result.success(wifiInfo.ssid)
+			"openUrl" -> {
+				try {
+					val url = call.argument<String>("url") ?: ""
+					AppUtil.openUrl(context, url)
+					result.success(true)
 				} catch (err: Exception) {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
 
-			"get_installed_apps" -> {
-				try {
+			"hideFullScreen" -> {
+				activity?.let {
+					AppUtil.hideFullScreen(it.window, context)
+				}
+				result.success(true)
+			}
 
+			"showFullScreen" -> {
+				activity?.let { AppUtil.showFullScreen(it.window) }
+				result.success(true)
+			}
+
+			"getInstalledAppsList" -> {
+				try {
 					val packageManager = context.packageManager
 					val packages = packageManager?.getInstalledApplications(0)?.map {
 						mapOf(
@@ -87,65 +108,37 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 				}
 			}
 
-			"get_last_known_location" -> {
+			"getBatteryLevel" -> {
 				try {
-					val locationManager =
-						context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-					val location =
-						locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-					if (location != null) {
-						val locationData = mapOf(
-							"latitude" to location.latitude,
-							"longitude" to location.longitude
-						)
-						result.success(locationData)
-					} else {
-						result.error("LOCATION_ERROR", "Location not available", null)
-					}
+					val res = AppUtil.getBatteryLevel(context)
+					result.success(res)
 				} catch (err: Exception) {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
 
-			"get_battery_level" -> {
+			"isInternetConnected" -> {
 				try {
-					val batteryManager =
-						context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-					val batteryLevel =
-						batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-					result.success(batteryLevel)
-
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"is_internet_connected" -> {
-				try {
-
 					val connectivityManager =
 						context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 					val networkInfo = connectivityManager.activeNetworkInfo
 					result.success(networkInfo?.isConnected == true)
 
-
 				} catch (err: Exception) {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
 
-			"is_system_dark_mode" -> {
+			"isDarkModeEnabled" -> {
 				try {
-					val isDarkMode =
-						(context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-
+					val isDarkMode = AppUtil.isDarkModeEnabled(context)
 					result.success(isDarkMode)
 				} catch (err: Exception) {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
 
-			"get_app_file_path" -> {
+			"getFilesDir" -> {
 				try {
 					val res = context.filesDir
 					result.success(res.path)
@@ -154,7 +147,7 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 				}
 			}
 
-			"get_app_root_path" -> {
+			"getExternalFilesDir" -> {
 				try {
 					val res = context.getExternalFilesDir(null)
 					result.success(res?.path)
@@ -163,43 +156,28 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 				}
 			}
 
-			"get_app_external_path" -> {
+			"getAppExternalPath" -> {
 				try {
 					result.success("/storage/emulated/0")
 				} catch (err: Exception) {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
-
-			"req_orientation" -> {
+			//orientation
+			"requestOrientation" -> {
 				try {
 					val type = call.argument<String>("type") ?: "Portrait"
 					val isReverse = call.argument<Boolean>("reverse") ?: false
 					activity?.let {
-						if (type == "Portrait") {
-							if (isReverse) {
-								it.requestedOrientation = SCREEN_ORIENTATION_REVERSE_PORTRAIT
-							} else {
-								it.requestedOrientation = SCREEN_ORIENTATION_UNSPECIFIED
-							}
-						} else if (type == "Landscape") {
-							if (isReverse) {
-								it.requestedOrientation = SCREEN_ORIENTATION_REVERSE_LANDSCAPE
-							} else {
-								it.requestedOrientation = SCREEN_ORIENTATION_LANDSCAPE
-							}
-
-						}
-
+						AppUtil.requestOrientation(it, isReverse = isReverse, type = type)
 					}
-
 					result.success("")
 				} catch (err: Exception) {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
 
-			"check_orientation" -> {
+			"checkOrientation" -> {
 				try {
 					val res = checkOrientation(context)
 					result.success(res)
@@ -208,15 +186,208 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 				}
 			}
 
-			"gen_video_thumbnail_list" -> {
+			"getDeviceInfo" -> {
+				try {
+					val obj = AppUtil.getDeviceInfo()
+					result.success(obj)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getPlatformVersion" -> {
+				result.success(android.os.Build.VERSION.RELEASE)
+			}
+
+			"toggleKeepScreenOn" -> {
+				try {
+					val isKeep = call.argument<Boolean>("is_keep") ?: false
+					activity?.let { toggleKeepScreenOn(it.window, isKeep) }
+					result.success("")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getDeviceId" -> {
+				try {
+					val androidId = AppUtil.getDeviceId(context)
+					result.success(androidId)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			//permission
+			"checkCanRequestPackageInstallsPermission" -> {
+				try {
+					activity?.let {
+						PermissionUtil.checkCanRequestPackageInstallsPermission(it)
+						result.success("")
+					}
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+			//is
+			"isPackageInstallPermission" -> {
+				try {
+					activity?.let {
+						val res = PermissionUtil.isPackageInstallPermission(it)
+						result.success(res)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isStoragePermissionGranted" -> {
+				try {
+					activity?.let {
+						val res = PermissionUtil.isStoragePermissionGranted(it)
+						result.success(res)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isCameraPermission" -> {
+				try {
+					activity?.let {
+						val res = PermissionUtil.isCameraPermission(it)
+						result.success(res)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isLocationPermission" -> {
+				try {
+					activity?.let {
+						val res = PermissionUtil.isLocationPermission(it)
+						result.success(res)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+			//req
+			"requestStoragePermission" -> {
+				try {
+					activity?.let {
+						PermissionUtil.requestStoragePermission(it)
+						result.success("")
+					}
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"requestPackageInstallPermission" -> {
+				try {
+					activity?.let {
+						PermissionUtil.requestPackageInstallPermission(it)
+						result.success("")
+					}
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"requestCameraPermission" -> {
+				try {
+					activity?.let {
+						PermissionUtil.requestCameraPermission(it)
+						result.success("")
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"requestLocationPermission" -> {
+				try {
+					activity?.let {
+						PermissionUtil.requestLocationPermission(it)
+						result.success("")
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			//wifi
+			"getWifiSSID" -> {
+				try {
+					val wifiManager =
+						context.applicationContext?.getSystemService(Context.WIFI_SERVICE) as WifiManager
+					val wifiInfo = wifiManager.connectionInfo
+					result.success(wifiInfo.ssid)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getLocalIpAddress" -> {
+				try {
+					val res = getLocalIpAddress()
+					result.success(res)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getWifiAddress" -> {
+				try {
+					val res = getWifiAddress()
+					result.success(res)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getWifiAddressList" -> {
+				try {
+					val res = getWifiAddressList()
+					result.success(res)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			//video thumbnail
+			"genVideoThumbnailList" -> {
 				try {
 					val pathList = call.argument<List<String>>("path_list") ?: listOf()
 					val outDirPath = call.argument<String>("out_dir_path") ?: ""
-					ThumbnailUtil.genVideoThumbnail(
-						outDirPath = outDirPath,
+
+					VideoUtil.genVideoThumbnailList(outDirPath = outDirPath,
 						pathList = pathList,
 						onCreated = {
 							result.success("")
+						},
+						onError = { err ->
+							result.error("ERROR", err.toString(), err)
+						})
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"genVideoThumbnail" -> {
+				try {
+					val videoPath = call.argument<String>("video_path") ?: ""
+					val outPath = call.argument<String>("out_path") ?: ""
+
+					VideoUtil.genVideoThumbnail(videoPath = videoPath,
+						outPath = outPath,
+						onCreated = { savedPath ->
+							result.success(savedPath)
 						},
 						onError = { err ->
 							result.error("ERROR", err.toString(), err)
@@ -227,117 +398,8 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 					result.error("ERROR", err.toString(), err)
 				}
 			}
-
-			"check_req_package_install_permission" -> {
-				try {
-					activity?.let {
-						checkCanRequestPackageInstallsPermission(it)
-						result.success("")
-					}
-
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"check_storage_permission_granted" -> {
-				try {
-					activity?.let {
-						val res = isStoragePermissionGranted(it)
-						result.success(res)
-					}
-
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"req_storage_permission" -> {
-				try {
-					activity?.let {
-						requestStoragePermission(it)
-						result.success("")
-					}
-
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"toggle_keep_screen" -> {
-				try {
-					val isKeep = call.argument<Boolean>("is_keep") ?: false
-					activity?.let { toggleKeepScreenOn(it.window, isKeep) }
-					result.success("")
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"get_device_id" -> {
-				try {
-					val androidId = Settings.Secure.getString(
-						context.contentResolver,
-						Settings.Secure.ANDROID_ID
-					)
-					result.success(androidId)
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"get_local_ip_address" -> {
-				try {
-					val res = getLocalIpAddress()
-					result.success(res)
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"get_wifi_address" -> {
-				try {
-					val res = getWifiAddress()
-					result.success(res)
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"get_wifi_address_list" -> {
-				try {
-					val res = getWifiAddressList()
-					result.success(res)
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"open_url" -> {
-				try {
-					val url = call.argument<String>("url") ?: ""
-
-					val i = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-					i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-
-					context.startActivity(i)
-					result.success(true)
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
-			}
-
-			"hide_fullscreen" -> {
-				activity?.let { hideFullScreen(it.window) }
-				result.success(true)
-			}
-
-			"show_fullscreen" -> {
-				activity?.let { showFullScreen(it.window) }
-				result.success(true)
-			}
-
-			"genPdfCover" -> {
+			//pdf util
+			"genPdfCoverList" -> {
 				val outDirPath = call.argument<String>("out_dir_path")
 				val pdfListPath = call.argument<List<String>>("pdf_path_list")
 				val size = call.argument<Int>("size") ?: 300
@@ -346,51 +408,53 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 					result.error(
 						"ERROR",
 						"outDirPath == null || pdfListPath == null",
-						"val outDirPath = call.argument<String>(\"\")\n" +
-								"        val pdfListPath = call.argument<List<String>>(\"\")\n" +
-								"        val size = call.argument<Int>(\"\")"
+						"val outDirPath = call.argument<String>(\"\")\n" + "        val pdfListPath = call.argument<List<String>>(\"\")\n" + "        val size = call.argument<Int>(\"\")"
 					)
 					return
 				}
-
-				genPdfCoverList(
-					pathList = pdfListPath,
+				PdfUtil.genPdfCoverList(pathList = pdfListPath,
 					outPath = outDirPath,
 					size = size,
 					onLoaded = {
 						result.success("success")
-					}, onError = { err ->
+					},
+					onError = { err ->
 						result.error("ERROR", err.toString(), err)
 					})
 
 			}
 
-			"get_android_device_info" -> {
-				try {
-					val obj = mapOf(
-						"fingerprint" to Build.FINGERPRINT,
-						"soc_model" to Build.SOC_MODEL,
-						"model" to Build.MODEL,
-						"product" to Build.PRODUCT,
-						"manufacture" to Build.MANUFACTURER,
-						"hardware" to Build.HARDWARE,
-						"bootloader" to Build.BOOTLOADER,
-						"board" to Build.BOARD,
-						"release_or_codename" to Build.VERSION.RELEASE_OR_CODENAME,
-						"security_patch" to Build.VERSION.SECURITY_PATCH,
-						"preview_sdk_int" to Build.VERSION.PREVIEW_SDK_INT,
-						"sdk_int" to Build.VERSION.SDK_INT,
-						"base_os" to Build.VERSION.BASE_OS,
-						"codename" to Build.VERSION.CODENAME,
-					)
-					result.success(obj)
-				} catch (err: Exception) {
-					result.error("ERROR", err.toString(), err)
-				}
+			"genPdfImage" -> {
+				val pdfPath = call.argument<String>("pdf_path") ?: ""
+				val outPath = call.argument<String>("out_path") ?: ""
+				val pageIndex = call.argument<Int>("page_index") ?: 0
+				val size = call.argument<Int>("size") ?: -1
+				PdfUtil.genPdfThumbnail(pdfPath = pdfPath,
+					thumbnailPath = outPath,
+					size = size,
+					pageIndex = pageIndex,
+					onLoaded = { savedPath ->
+						result.success(savedPath)
+					},
+					onError = { err ->
+						result.error("ERROR", err.toString(), err)
+					})
 			}
 
-			"getPlatformVersion" -> {
-				result.success(android.os.Build.VERSION.RELEASE)
+			"getPdfPageCount" -> {
+				val pdfPath = call.argument<String>("pdf_path") ?: ""
+				PdfUtil.getPdfPageCount(pdfPath = pdfPath, onLoaded = { pageCount ->
+					result.success(pageCount)
+				}, onError = { err ->
+					result.error("ERROR", err.toString(), err)
+				})
+			}
+			//camera
+			"openCamera" -> {
+				activity?.let {
+					CameraUtil.openCamera(it)
+				}
+				result.success("")
 			}
 
 			else -> {

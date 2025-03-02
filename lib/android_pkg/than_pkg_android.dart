@@ -3,66 +3,61 @@ import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 class ThanPkgAndroid extends ThanPkg {
-  final channel = const MethodChannel('than_pkg');
+  
 
   @override
   Future<String?> getWifiSSID() async {
-    final res = await channel.invokeMethod<String>('get_wifi_SSID');
+    final res = await channel.invokeMethod<String>('getWifiSSID');
     return res;
   }
 
   @override
   Future<List<Map>> getInstalledApps() async {
-    final res = await channel.invokeMethod<List>('get_installed_apps');
+    final res = await channel.invokeMethod<List>('getInstalledAppsList');
     if (res == null) return [];
     return res.map((map) => Map<String, String>.from(map)).toList();
   }
 
-  @override
-  Future<Map> getLastKnownLocation() async {
-    final res = await channel.invokeMethod<Map>('get_last_known_location');
-    return res ?? {};
-  }
 
   @override
   Future<int> getAppBatteryLevel() async {
-    final res = await channel.invokeMethod<int>('get_battery_level');
+    final res = await channel.invokeMethod<int>('getBatteryLevel');
     return res ?? -1;
   }
 
   @override
   Future<bool> isAppInternetConnected() async {
-    final res = await channel.invokeMethod<bool>('is_internet_connected');
+    final res = await channel.invokeMethod<bool>('isInternetConnected');
     return res ?? false;
   }
 
   @override
   Future<bool> isAppSystemThemeDarkMode() async {
-    final res = await channel.invokeMethod<bool>('is_system_dark_mode');
+    final res = await channel.invokeMethod<bool>('isDarkModeEnabled');
     return res ?? false;
   }
 
   @override
   Future<String?> getAppFilePath() async {
-    final res = await channel.invokeMethod<String>('get_app_file_path');
+    final res = await channel.invokeMethod<String>('getFilesDir');
     return res;
   }
 
   @override
   Future<String?> getAppRootPath() async {
-    final res = await channel.invokeMethod<String>('get_app_root_path');
+    final res = await channel.invokeMethod<String>('getExternalFilesDir');
     return res;
   }
 
   @override
   Future<String?> getAppExternalPath() async {
-    final res = await channel.invokeMethod<String>('get_app_external_path');
+    final res = await channel.invokeMethod<String>('getAppExternalPath');
     return res;
   }
 
   @override
   Future<ScreenOrientationTypes?> checkScreenOrientation() async {
-    final res = await channel.invokeMethod<String>('check_orientation');
+    final res = await channel.invokeMethod<String>('checkOrientation');
     if (res == null) return null;
     if (res == ScreenOrientationTypes.Portrait.name) {
       return ScreenOrientationTypes.Portrait;
@@ -77,7 +72,7 @@ class ThanPkgAndroid extends ThanPkg {
     required ScreenOrientationTypes type,
     bool reverse = false,
   }) async {
-    await channel.invokeMethod('req_orientation', {
+    await channel.invokeMethod('requestOrientation', {
       'type': type.name,
       'reverse': reverse,
     });
@@ -89,7 +84,7 @@ class ThanPkgAndroid extends ThanPkg {
     required List<String> videoPathList,
     int iconSize = 300,
   }) async {
-    await channel.invokeMethod('gen_video_thumbnail_list', {
+    await channel.invokeMethod('genVideoThumbnailList', {
       'path_list': videoPathList,
       'out_dir_path': outDirPath,
       'icon_size': iconSize,
@@ -98,7 +93,7 @@ class ThanPkgAndroid extends ThanPkg {
 
   @override
   Future<Map<String, dynamic>> getAndroidDeviceInfo() async {
-    final res = await channel.invokeMethod<Map>('get_android_device_info');
+    final res = await channel.invokeMethod<Map>('getDeviceInfo');
     if (res == null) return {};
     return Map<String, dynamic>.from(res);
   }
@@ -106,28 +101,23 @@ class ThanPkgAndroid extends ThanPkg {
   @override
   Future<bool> isStoragePermissionGranted() async {
     final res =
-        await channel.invokeMethod<bool>('check_storage_permission_granted');
+        await channel.invokeMethod<bool>('isStoragePermissionGranted');
     return res ?? false;
   }
 
   @override
-  Future<void> checkAndRequestPackageInstallPermission() async {
-    await channel.invokeMethod('check_req_package_install_permission');
-  }
-
-  @override
   Future<void> requestStoragePermission() async {
-    await channel.invokeMethod('req_storage_permission');
+    await channel.invokeMethod('requestStoragePermission');
   }
 
   @override
   Future<void> toggleKeepScreen({required bool isKeep}) async {
-    await channel.invokeMethod('toggle_keep_screen', {'is_keep': isKeep});
+    await channel.invokeMethod('toggleKeepScreenOn', {'is_keep': isKeep});
   }
 
   @override
   Future<String?> getDeviceId() async {
-    return await channel.invokeMethod<String>('get_device_id');
+    return await channel.invokeMethod<String>('getDeviceId');
   }
 
   @override
@@ -144,7 +134,7 @@ class ThanPkgAndroid extends ThanPkg {
 
   @override
   Future<String?> getLocalIpAddress() async {
-    return await channel.invokeMethod<String>('get_local_ip_address');
+    return await channel.invokeMethod<String>('getLocalIpAddress');
   }
 
   @override
@@ -155,19 +145,19 @@ class ThanPkgAndroid extends ThanPkg {
 
   @override
   Future<String?> getWifiAddress() async {
-    return await channel.invokeMethod<String>('get_wifi_address');
+    return await channel.invokeMethod<String>('getWifiAddress');
   }
 
   @override
   Future<List<String>> getWifiAddressList() async {
-    final res = await channel.invokeMethod<List>('get_wifi_address_list');
+    final res = await channel.invokeMethod<List>('getWifiAddressList');
     if (res == null) return [];
     return List<String>.from(res.map((obj) => obj.toString()));
   }
 
   @override
   Future<bool> openUrl({required String url}) async {
-    final res = await channel.invokeMethod<bool>('open_url', {'url': url});
+    final res = await channel.invokeMethod<bool>('openUrl', {'url': url});
     return res ?? false;
   }
 
@@ -176,10 +166,10 @@ class ThanPkgAndroid extends ThanPkg {
     if (isFullScreen) {
       SystemChrome.setEnabledSystemUIMode(
           SystemUiMode.immersiveSticky); // Fullscreen mode
-      await channel.invokeMethod('show_fullscreen');
+      await channel.invokeMethod('showFullScreen');
     } else {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      await channel.invokeMethod('hide_fullscreen');
+      await channel.invokeMethod('hideFullScreen');
     }
   }
 }

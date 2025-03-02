@@ -1,4 +1,15 @@
+## 1.6.0
+
+## Added 
+- android native method
+- `ThanPkg.android.*`
+
+## Fixed
+- `ThanPkg.platform.genVideoCover` thread error
+
+
 ## 1.5.4
+
 ## Added 
 - `Future<PackageInfo> getPackageInfo()` add package_info_plus package ထည့်ထား
 

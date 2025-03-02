@@ -1,28 +1,43 @@
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:than_pkg/android_pkg/android_pkg.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
-import 'package:than_pkg/than_pkg_android.dart';
+import 'package:than_pkg/android_pkg/than_pkg_android.dart';
 import 'package:than_pkg/than_pkg_interface.dart';
-import 'package:than_pkg/than_pkg_linux.dart';
+import 'package:than_pkg/linux_pkg/than_pkg_linux.dart';
 import 'package:window_manager/window_manager.dart';
 
 class ThanPkg implements ThanPkgInterface {
-  static Future<void> windowManagerensureInitialized() async {
-    if (Platform.isLinux) {
-      await windowManager.ensureInitialized();
-    }
-  }
-
-  static ThanPkg get platform => _createInstance();
-
+  //singleton
+  static final ThanPkg _instance = _createInstance();
+  static ThanPkg get platform => _instance;
   static ThanPkg _createInstance() {
     if (Platform.isAndroid) {
       return ThanPkgAndroid();
     } else if (Platform.isLinux) {
       return ThanPkgLinux();
     } else {
-      return ThanPkg();
+      return ThanPkg._();
+    }
+  }
+
+  final channel = const MethodChannel('than_pkg');
+  //for another class
+  static MethodChannel get getChannel => const MethodChannel('than_pkg');
+
+  ThanPkg(); //private consturctor
+  //unname constructor
+  ThanPkg._();
+  // class //
+  //permission
+  static AndroidPkg get android => AndroidPkg.android;
+
+  //window mangager
+  static Future<void> windowManagerensureInitialized() async {
+    if (Platform.isLinux) {
+      await windowManager.ensureInitialized();
     }
   }
 
@@ -238,6 +253,7 @@ class ThanPkg implements ThanPkgInterface {
   /// ```
   ///
   /// This method should be implemented to check and request storage permissions.
+  @Deprecated('you should used `ThanPkg.`')
   @override
   Future<bool> isStoragePermissionGranted() async {
     // TODO: Implement isStoragePermissionGranted method.
@@ -264,26 +280,6 @@ class ThanPkg implements ThanPkgInterface {
   @override
   Future<void> requestStoragePermission() async {
     // TODO: Implement requestStoragePermission method.
-    throw UnimplementedError();
-  }
-
-  /// Checks and requests the package install permission.
-  ///
-  /// This function checks whether the app has permission to install packages. If the
-  /// permission is not granted, it will request the permission from the user.
-  ///
-  /// ### Returns:
-  /// - A [Future<void>] that completes once the permission check and request are completed.
-  ///
-  /// ### Example Usage:
-  /// ```dart
-  /// await checkAndRequestPackageInstallPermission(); // Check and request package install permission
-  /// ```
-  ///
-  /// This method should be implemented to handle the permission check and request logic.
-  @override
-  Future<void> checkAndRequestPackageInstallPermission() async {
-    // TODO: Implement checkAndRequestPackageInstallPermission method.
     throw UnimplementedError();
   }
 
@@ -520,12 +516,6 @@ class ThanPkg implements ThanPkgInterface {
   @override
   Future<List<Map>> getInstalledApps() {
     // TODO: implement getInstalledApps
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<Map> getLastKnownLocation() {
-    // TODO: implement getLastKnownLocation
     throw UnimplementedError();
   }
 

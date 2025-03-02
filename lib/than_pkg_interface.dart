@@ -25,7 +25,7 @@ abstract class ThanPkgInterface {
   Future<Map<String, dynamic>> getAndroidDeviceInfo();
   Future<bool> isStoragePermissionGranted();
   Future<void> requestStoragePermission();
-  Future<void> checkAndRequestPackageInstallPermission();
+  // Future<void> checkAndRequestPackageInstallPermission();
   Future<String?> getDeviceId();
   Future<String?> getPlatformVersion();
   Future<String?> getLocalIpAddress();
@@ -38,7 +38,6 @@ abstract class ThanPkgInterface {
   Future<bool> isAppSystemThemeDarkMode();
   Future<bool> isAppInternetConnected();
   Future<int> getAppBatteryLevel();
-  Future<Map> getLastKnownLocation();
   Future<List<Map>> getInstalledApps();
   Future<String?> getWifiSSID();
 
