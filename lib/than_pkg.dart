@@ -25,7 +25,7 @@ class ThanPkg implements ThanPkgInterface {
 
   final channel = const MethodChannel('than_pkg');
   //for another class
-  static MethodChannel get getChannel => const MethodChannel('than_pkg');
+  // static MethodChannel get getChannel => const MethodChannel('than_pkg');
 
   ThanPkg(); //private consturctor
   //unname constructor
@@ -253,7 +253,6 @@ class ThanPkg implements ThanPkgInterface {
   /// ```
   ///
   /// This method should be implemented to check and request storage permissions.
-  @Deprecated('you should used `ThanPkg.`')
   @override
   Future<bool> isStoragePermissionGranted() async {
     // TODO: Implement isStoragePermissionGranted method.

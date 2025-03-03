@@ -1,5 +1,74 @@
-## 1.6.0
+## 1.6.1
+### Added
+- ThanPkg.android.thumbnail
+```Dart
+Future<void> genVideoThumbnailList({
+    required String outDirPath,
+    required List<String> videoPathList,
+    int iconSize = 300,
+  })
+Future<String?> genVideoThumbnail({
+    required String outPath,
+    required String videoPath,
+  })
+Future<void> genPdfCoverList({
+    required String outDirPath,
+    required List<String> pdfPathList,
+    int iconSize = 300,
+  })
+Future<String> genPdfImage({
+    required String pdfPath,
+    required String outPath,
+    int imageSize = -1, // -1 is pdf.width&& pdf.height
+    int pageIndex = 0, //0 base
+  })
+Future<int> getPdfPageCount({required String pdfPath})
+```
 
+- ThanPkg.android.permission
+```Dart
+Future<void> checkCanRequestPackageInstallsPermission
+Future<bool> isPackageInstallPermission()
+Future<bool> isStoragePermissionGranted()
+Future<bool> isCameraPermission()
+Future<bool> isLocationPermission()
+Future<void> requestStoragePermission()
+Future<void> requestPackageInstallPermission()
+Future<void> requestCameraPermission()
+Future<void> requestLocationPermission()
+```
+- ThanPkg.android.camera
+```Dart
+Future<String> openCamera()
+```
+
+- ThanPkg.android.wifi
+```Dart
+Future<String> getWifiSSID()
+Future<void> getLocalIpAddress()
+Future<void> getWifiAddress()
+Future<List<String>> getWifiAddressList()
+```
+- ThanPkg.android.app
+```Dart
+Future<void> openUrl({required String url})
+Future<void> hideFullScreen()
+Future<void> showFullScreen()
+Future<List<Map<String, dynamic>>> getInstalledAppsList()
+Future<int> getBatteryLevel()
+Future<bool> isInternetConnected()
+Future<bool> isDarkModeEnabled()
+Future<String> getFilesDir()
+Future<String> getExternalFilesDir()
+Future<String> getAppExternalPath()
+Future<void> requestOrientation({required ScreenOrientationTypes type,bool isReverse = false,})
+Future<bool> checkOrientation()
+Future<String> getPlatformVersion()
+Future<void> toggleKeepScreenOn({required bool isKeep})
+Future<String> getDeviceId()
+```
+
+## 1.6.0
 ## Added 
 - android native method
 - `ThanPkg.android.*`

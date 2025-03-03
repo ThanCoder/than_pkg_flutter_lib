@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -17,6 +19,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool isFullScreen = false;
+  String imageUri = '';
 
   @override
   void initState() {
@@ -30,11 +33,10 @@ class _MyAppState extends State<MyApp> {
 
   void _test() async {
     try {
-      if (!await ThanPkg.android.permission.isStoragePermissionGranted()) {
-        await ThanPkg.android.permission.requestStoragePermission();
+      if (!await ThanPkg.android.permission.isCameraPermission()) {
+        await ThanPkg.android.permission.requestCameraPermission();
         return;
       }
-      await ThanPkg.android.camera.openCamera();
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -51,7 +53,13 @@ class _MyAppState extends State<MyApp> {
             : AppBar(
                 title: const Text('test lib'),
               ),
-        body: Placeholder(),
+        body: Center(
+          child: imageUri.isEmpty
+              ? Text('Camera')
+              : Image.file(
+                  File(imageUri),
+                ),
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: _test,
           child: Icon(Icons.get_app),

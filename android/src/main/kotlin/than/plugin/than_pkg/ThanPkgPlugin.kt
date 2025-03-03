@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 import android.content.res.Configuration
+import android.graphics.Bitmap
 import android.location.LocationManager
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -16,6 +17,7 @@ import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
 import android.provider.Settings
+import android.widget.ImageView
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
@@ -31,6 +33,7 @@ import than.plugin.than_pkg.AppUtil.toggleKeepScreenOn
 import than.plugin.than_pkg.PdfUtil.genPdfCoverList
 import than.plugin.than_pkg.PermissionUtil.isStoragePermissionGranted
 import than.plugin.than_pkg.PermissionUtil.requestStoragePermission
+import than.plugin.than_pkg.TContentProvider.Companion.filePath
 import than.plugin.than_pkg.WifiUtil.getLocalIpAddress
 import than.plugin.than_pkg.WifiUtil.getWifiAddress
 import than.plugin.than_pkg.WifiUtil.getWifiAddressList
@@ -55,13 +58,45 @@ class ThanPkgPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 		activity = binding.activity
 		//listen activity result
 		binding.addActivityResultListener { reqCode, resultCode, data ->
-			channel.invokeMethod(
-				"onActivityResult", mapOf(
-					"requestCode" to reqCode,
-					"resultCode" to resultCode,
-					"data" to data?.toString(),
+
+			if (resultCode == Activity.RESULT_OK) {
+				//camera
+				if (reqCode == 20000) {
+					val imageUri: Uri? = data?.data
+					val imageBitmap = data?.extras?.get("data") as? Bitmap
+					if(imageUri == null){
+						imageBitmap?.let {
+							//save bitmap
+							val filePath=	FileUtil.saveBitmapToFile(context,it)
+							channel.invokeMethod(
+								"onCameraResult", mapOf(
+									"requestCode" to reqCode,
+									"resultCode" to resultCode,
+									"data" to filePath,
+								)
+							)
+						}
+					}else{
+						channel.invokeMethod(
+							"onCameraResult", mapOf(
+								"requestCode" to reqCode,
+								"resultCode" to resultCode,
+								"data" to imageUri.toString(),
+							)
+						)
+					}
+
+
+				}else{
+					channel.invokeMethod(
+					"onActivityResult", mapOf(
+						"requestCode" to reqCode,
+						"resultCode" to resultCode,
+						"data" to data?.toString(),
+					)
 				)
-			)
+				}
+			}
 			true
 		}
 	}

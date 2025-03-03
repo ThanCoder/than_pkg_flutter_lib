@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 
 class AndroidCamera {
@@ -7,20 +9,30 @@ class AndroidCamera {
 
   final _channel = const MethodChannel('than_pkg');
 
-  // void _cameraListener({required VoidCallback callback}) {
-  //   _channel.setMethodCallHandler((call) async {
-  //     if (call.method == 'onCameraResult') {
-  //       final uri = call.arguments['uri'];
-  //       callback();
-  //     }
-  //   });
-  // }
+  void _cameraListener({required void Function(String imageUri) callback}) {
+    _channel.setMethodCallHandler((call) async {
+      if (call.method == 'onCameraResult') {
+        final uri = call.arguments['data'] ?? '';
+        callback(uri);
+      }
+    });
+  }
 
-  // Future<void> openCamera({required VoidCallback callback}) async {
-  //   _cameraListener(callback: callback);
+  Future<String> openCamera() async {
+    final completer = Completer<String>();
+    _cameraListener(
+      callback: (imageUri) {
+        completer.complete(imageUri);
+      },
+    );
+    try {
+      await _channel.invokeMethod('openCamera');
+    } catch (e) {
+      completer.completeError(e);
+    }
+    return completer.future;
+  }
+  // Future<void> openCamera() async {
   //   await _channel.invokeMethod('openCamera');
   // }
-  Future<void> openCamera() async {
-    await _channel.invokeMethod('openCamera');
-  }
 }
