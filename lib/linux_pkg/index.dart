@@ -1,2 +1,1 @@
-export './than_pkg_linux.dart';
-export './video_linux_services.dart';
+export '../platforms/than_pkg_linux.dart';

@@ -12,6 +12,8 @@ import android.os.Environment
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel.Result
 
 /**
  * <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -20,6 +22,113 @@ import androidx.core.content.ContextCompat
  */
 
 object PermissionUtil {
+	fun callCheck(call: MethodCall, result: Result, context: Context, activity: Activity?){
+		val method = call.method.replace("permissionUtil/","")
+		when(method) {
+			//permission
+			"checkCanRequestPackageInstallsPermission" -> {
+				try {
+					activity?.let {
+						checkCanRequestPackageInstallsPermission(it)
+						result.success("")
+					}
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+			//is
+			"isPackageInstallPermission" -> {
+				try {
+					activity?.let {
+						val res = isPackageInstallPermission(it)
+						result.success(res)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isStoragePermissionGranted" -> {
+				try {
+					activity?.let {
+						val res = isStoragePermissionGranted(it)
+						result.success(res)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isCameraPermission" -> {
+				try {
+					activity?.let {
+						val res = isCameraPermission(it)
+						result.success(res)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isLocationPermission" -> {
+				try {
+					activity?.let {
+						val res = isLocationPermission(it)
+						result.success(res)
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+			//req
+			"requestStoragePermission" -> {
+				try {
+					activity?.let {
+						requestStoragePermission(it)
+						result.success("")
+					}
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"requestPackageInstallPermission" -> {
+				try {
+					activity?.let {
+						requestPackageInstallPermission(it)
+						result.success("")
+					}
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"requestCameraPermission" -> {
+				try {
+					activity?.let {
+						requestCameraPermission(it)
+						result.success("")
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"requestLocationPermission" -> {
+				try {
+					activity?.let {
+						requestLocationPermission(it)
+						result.success("")
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+		}
+	}
 
 	fun isCameraPermission(context: Context): Boolean {
 		return (ContextCompat.checkSelfPermission(

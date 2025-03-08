@@ -1,8 +1,26 @@
-## Added
+### Added
+
+```xml
+<application>
+<provider
+    android:name="than.plugin.than_pkg.TContentProvider"
+    android:authorities="${applicationId}.provider"
+    android:exported="false"
+    android:grantUriPermissions="true" />
+
+</application>
+```
+- for above android xml code
+```Dart
+Future<void> openPdfWithIntent({required String path})
+Future<void> openVideoWithIntent({required String path})
+Future<void> installApk({required String path})
+```
 
 ### Android Thumbnail
 
 - ThanPkg.android.thumbnail
+
 ```Dart
 Future<void> genVideoThumbnailList
 Future<String?> genVideoThumbnail
@@ -29,7 +47,9 @@ if (!await ThanPkg.android.permission.isCameraPermission()) {
     return;
 }
 ```
+
 - ThanPkg.android.permission
+
 ```Dart
 Future<void> checkCanRequestPackageInstallsPermission
 Future<bool> isPackageInstallPermission()

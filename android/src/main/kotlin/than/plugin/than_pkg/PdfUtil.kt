@@ -1,17 +1,77 @@
 package than.plugin.than_pkg
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.pdf.PdfRenderer
 import android.os.Handler
 import android.os.Looper
 import android.os.ParcelFileDescriptor
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel.Result
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.Executors
 
 object PdfUtil {
+	fun callCheck(call: MethodCall, result: Result, context: Context, activity: Activity?) {
+		val method = call.method.replace("pdfUtil/", "")
+		when (method) {
+//pdf util
+			"genPdfCoverList" -> {
+				val outDirPath = call.argument<String>("out_dir_path")
+				val pdfListPath = call.argument<List<String>>("pdf_path_list")
+				val size = call.argument<Int>("size") ?: 300
+
+				if (outDirPath == null || pdfListPath == null) {
+					result.error(
+						"ERROR",
+						"outDirPath == null || pdfListPath == null",
+						"val outDirPath = call.argument<String>(\"\")\n" + "        val pdfListPath = call.argument<List<String>>(\"\")\n" + "        val size = call.argument<Int>(\"\")"
+					)
+					return
+				}
+				genPdfCoverList(pathList = pdfListPath,
+					outPath = outDirPath,
+					size = size,
+					onLoaded = {
+						result.success("success")
+					},
+					onError = { err ->
+						result.error("ERROR", err.toString(), err)
+					})
+
+			}
+
+			"genPdfImage" -> {
+				val pdfPath = call.argument<String>("pdf_path") ?: ""
+				val outPath = call.argument<String>("out_path") ?: ""
+				val pageIndex = call.argument<Int>("page_index") ?: 0
+				val size = call.argument<Int>("size") ?: -1
+				genPdfThumbnail(pdfPath = pdfPath,
+					thumbnailPath = outPath,
+					size = size,
+					pageIndex = pageIndex,
+					onLoaded = { savedPath ->
+						result.success(savedPath)
+					},
+					onError = { err ->
+						result.error("ERROR", err.toString(), err)
+					})
+			}
+
+			"getPdfPageCount" -> {
+				val pdfPath = call.argument<String>("pdf_path") ?: ""
+				getPdfPageCount(pdfPath = pdfPath, onLoaded = { pageCount ->
+					result.success(pageCount)
+				}, onError = { err ->
+					result.error("ERROR", err.toString(), err)
+				})
+			}
+		}
+	}
 	private val handler = Handler(Looper.getMainLooper())
-	private val executorService = Executors.newSingleThreadExecutor();
+	private val executorService = Executors.newSingleThreadExecutor()
 
 	fun getPdfPageCount(
 		pdfPath: String,

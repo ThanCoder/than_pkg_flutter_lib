@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:than_pkg/than_pkg.dart';
 
@@ -20,6 +18,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool isFullScreen = false;
   String imageUri = '';
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -33,10 +32,10 @@ class _MyAppState extends State<MyApp> {
 
   void _test() async {
     try {
-      if (!await ThanPkg.android.permission.isCameraPermission()) {
-        await ThanPkg.android.permission.requestCameraPermission();
-        return;
-      }
+      // if (!await ThanPkg.android.permission.isCameraPermission()) {
+      //   await ThanPkg.android.permission.requestCameraPermission();
+      //   return;
+      // }
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -54,12 +53,10 @@ class _MyAppState extends State<MyApp> {
                 title: const Text('test lib'),
               ),
         body: Center(
-          child: imageUri.isEmpty
-              ? Text('Camera')
-              : Image.file(
-                  File(imageUri),
-                ),
-        ),
+            child: TextField(
+          controller: textEditingController,
+          decoration: InputDecoration(hintText: 'path'),
+        )),
         floatingActionButton: FloatingActionButton(
           onPressed: _test,
           child: Icon(Icons.get_app),

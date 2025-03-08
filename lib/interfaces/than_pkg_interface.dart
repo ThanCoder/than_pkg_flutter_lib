@@ -3,7 +3,7 @@ import 'package:than_pkg/enums/screen_orientation_types.dart';
 
 abstract class ThanPkgInterface {
   Future<List<String>> getWifiAddressList();
-  Future<bool> openUrl({required String url});
+  Future<void> openUrl({required String url});
   Future<void> toggleFullScreen({required bool isFullScreen});
   Future<void> genPdfCover({
     required String outDirPath,

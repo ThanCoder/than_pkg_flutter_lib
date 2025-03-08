@@ -1,10 +1,21 @@
 package than.plugin.than_pkg
 
+import android.app.Activity
+import android.content.Context
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel.Result
+
 
 //<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 //<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
 object LocationUtil {
+	fun callCheck(call: MethodCall, result: Result, context: Context, activity: Activity?) {
+		val method = call.method.replace("locationUtil/", "")
+		when (method) {
+
+		}
+	}
 
 //	private fun getLastLocation() {
 //		fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)

@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 import android.content.res.Configuration
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.BatteryManager
 import android.os.Build
@@ -21,22 +22,235 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.than_pkg.R
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel.Result
 
 
 object AppUtil {
-	fun showToast(ctx: Context, msg: String, toastDuraction: Int = Toast.LENGTH_SHORT) {
-		Toast.makeText(ctx, msg, toastDuraction).show()
+	@SuppressLint("MissingPermission", "NewApi")
+	fun callCheck(call: MethodCall, result: Result, context: Context, activity: Activity?) {
+		val method = call.method.replace("appUtil/", "")
+		when (method) {
+			"openUrl" -> {
+				try {
+					val url = call.argument<String>("url") ?: ""
+					openUrl(context, url)
+					result.success(true)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"hideFullScreen" -> {
+				activity?.let {
+					hideFullScreen(it.window, context)
+				}
+				result.success(true)
+			}
+
+			"showFullScreen" -> {
+				activity?.let { showFullScreen(it.window) }
+				result.success(true)
+			}
+
+			"getInstalledAppsList" -> {
+				try {
+					val packageManager = context.packageManager
+					val packages = packageManager?.getInstalledApplications(0)?.map {
+						mapOf(
+							"packageName" to it.packageName,
+							"appName" to packageManager.getApplicationLabel(it).toString()
+						)
+					}
+					result.success(packages)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getBatteryLevel" -> {
+				try {
+					val res = getBatteryLevel(context)
+					result.success(res)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isInternetConnected" -> {
+				try {
+					val connectivityManager =
+						context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+					val networkInfo = connectivityManager.activeNetworkInfo
+					@Suppress("DEPRECATION") result.success(networkInfo?.isConnected == true)
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isDarkModeEnabled" -> {
+				try {
+					val isDarkMode = isDarkModeEnabled(context)
+					result.success(isDarkMode)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getFilesDir" -> {
+				try {
+					val res = context.filesDir
+					result.success(res.path)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getExternalFilesDir" -> {
+				try {
+					val res = context.getExternalFilesDir(null)
+					result.success(res?.path)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getAppExternalPath" -> {
+				try {
+					result.success("/storage/emulated/0")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+			//orientation
+			"requestOrientation" -> {
+				try {
+					val type = call.argument<String>("type") ?: "Portrait"
+					val isReverse = call.argument<Boolean>("reverse") ?: false
+					activity?.let {
+						requestOrientation(it, isReverse = isReverse, type = type)
+					}
+					result.success("")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"checkOrientation" -> {
+				try {
+					val res = checkOrientation(context)
+					result.success(res)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getDeviceInfo" -> {
+				try {
+					val obj = getDeviceInfo()
+					result.success(obj)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getPlatformVersion" -> {
+				result.success(Build.VERSION.RELEASE)
+			}
+
+			"toggleKeepScreenOn" -> {
+				try {
+					val isKeep = call.argument<Boolean>("is_keep") ?: false
+					activity?.let { toggleKeepScreenOn(it.window, isKeep) }
+					result.success("")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"getDeviceId" -> {
+				try {
+					val androidId = getDeviceId(context)
+					result.success(androidId)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"showToast" -> {
+				try {
+					val msg = call.argument<String>("message") ?: ""
+					showToast(context, msg)
+					result.success("")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"openPdfWithIntent" -> {
+				try {
+					val path = call.argument<String>("path") ?: ""
+					activity?.let { it -> openPdfWithIntent(path, it) }
+					result.success("")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"openVideoWithIntent" -> {
+				try {
+					val path = call.argument<String>("path") ?: ""
+					activity?.let { it -> openVideoWithIntent(path, it) }
+					result.success("")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"installApk" -> {
+				try {
+					val path = call.argument<String>("path") ?: ""
+					activity?.let { it -> installApk(path, it) }
+					result.success("")
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"isFullScreen" -> {
+				try {
+					activity?.let {
+						val res = isFullScreen(window = activity.window)
+						result.success(res)
+						return@let
+					}
+					result.success(false)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+			"getSdkInt" -> {
+				try {
+					result.success(Build.VERSION.SDK_INT)
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+		}
 	}
 
-	fun getBatteryLevel(context: Context): Int {
-		val batteryManager =
-			context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
-		val batteryLevel =
-			batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+	private fun showToast(ctx: Context, msg: String, toastDuration: Int = Toast.LENGTH_SHORT) {
+		Toast.makeText(ctx, msg, toastDuration).show()
+	}
+
+	private fun getBatteryLevel(context: Context): Int {
+		val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+		val batteryLevel = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
 		return batteryLevel
 	}
 
-	fun isDarkModeEnabled(context: Context): Boolean {
+	private fun isDarkModeEnabled(context: Context): Boolean {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) { // Android 10 and above
 			val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
 			return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
@@ -45,18 +259,17 @@ object AppUtil {
 		}
 	}
 
-	fun openPdfWithIntent(filePath: String, activity: Activity) {
+	private fun openPdfWithIntent(filePath: String, activity: Activity) {
 		TContentProvider.openPdfFile(activity, filePath)
 	}
 
-	fun openVideoWithIntent(filePath: String, activity: Activity) {
+	private fun openVideoWithIntent(filePath: String, activity: Activity) {
 		TContentProvider.openVideoFile(activity, filePath)
 	}
 
-	fun installApk(filePath: String, activity: Activity) {
+	private fun installApk(filePath: String, activity: Activity) {
 		TContentProvider.installApk(activity, filePath)
 	}
-
 
 	@RequiresApi(Build.VERSION_CODES.S)
 	fun getDeviceInfo(): Map<String, Any> {
@@ -79,7 +292,7 @@ object AppUtil {
 		return obj
 	}
 
-	fun openUrl(context: Context, url: String) {
+	private fun openUrl(context: Context, url: String) {
 		val i = Intent(Intent.ACTION_VIEW, Uri.parse(url))
 		i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
@@ -89,14 +302,13 @@ object AppUtil {
 	@SuppressLint("HardwareIds")
 	fun getDeviceId(context: Context): String {
 		val androidId = Settings.Secure.getString(
-			context.contentResolver,
-			Settings.Secure.ANDROID_ID
+			context.contentResolver, Settings.Secure.ANDROID_ID
 		)
 		return androidId
 	}
 
 	// Check the current screen orientation (Portrait or Landscape)
-	fun checkOrientation(context: Context): String {
+	private fun checkOrientation(context: Context): String {
 		val orientation = context.resources.configuration.orientation
 		return if (orientation == Configuration.ORIENTATION_PORTRAIT) {
 			"Portrait"
@@ -105,7 +317,7 @@ object AppUtil {
 		}
 	}
 
-	fun requestOrientation(ctx: Activity, type: String, isReverse: Boolean = false) {
+	private fun requestOrientation(ctx: Activity, type: String, isReverse: Boolean = false) {
 		if (type == "Portrait") {
 			if (isReverse) {
 				ctx.requestedOrientation = SCREEN_ORIENTATION_UNSPECIFIED
@@ -122,7 +334,7 @@ object AppUtil {
 		}
 	}
 
-	fun toggleKeepScreenOn(window: Window, enable: Boolean) {
+	private fun toggleKeepScreenOn(window: Window, enable: Boolean) {
 		if (enable) {
 			window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 		} else {
@@ -158,7 +370,7 @@ object AppUtil {
 
 	}
 
-	fun hideFullScreen(window: Window, ctx: Context) {
+	private fun hideFullScreen(window: Window, ctx: Context) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			// ✅ Android 11+ (API 30+)
 			window.setDecorFitsSystemWindows(true)
@@ -190,7 +402,7 @@ object AppUtil {
 
 	}
 
-	fun isFullScreen(window: android.view.Window): Boolean {
+	private fun isFullScreen(window: Window): Boolean {
 		return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 			// ✅ Android 11+ (API 30+)
 			val insets = window.decorView.rootWindowInsets
@@ -199,8 +411,7 @@ object AppUtil {
 		} else {
 			// ✅ Android 10 and below (API 29 and below)
 			val flags = window.decorView.systemUiVisibility
-			val fullscreenFlags =
-				View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+			val fullscreenFlags = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 			(flags and fullscreenFlags) == fullscreenFlags
 		}
 	}

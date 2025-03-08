@@ -1,11 +1,15 @@
 package than.plugin.than_pkg
 
 
+import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.os.Handler
 import android.os.Looper
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel.Result
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
@@ -13,8 +17,52 @@ import java.util.concurrent.Executors
 
 object VideoUtil {
 
+	fun callCheck(call: MethodCall, result: Result, context: Context, activity: Activity?) {
+		val method = call.method.replace("videoUtil/", "")
+		when (method) {
+//video thumbnail
+			"genVideoThumbnailList" -> {
+				try {
+					val pathList = call.argument<List<String>>("path_list") ?: listOf()
+					val outDirPath = call.argument<String>("out_dir_path") ?: ""
+
+					genVideoThumbnailList(outDirPath = outDirPath,
+						pathList = pathList,
+						onCreated = {
+							result.success("")
+						},
+						onError = { err ->
+							result.error("ERROR", err.toString(), err)
+						})
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+
+			"genVideoThumbnail" -> {
+				try {
+					val videoPath = call.argument<String>("video_path") ?: ""
+					val outPath = call.argument<String>("out_path") ?: ""
+
+					genVideoThumbnail(videoPath = videoPath,
+						outPath = outPath,
+						onCreated = { savedPath ->
+							result.success(savedPath)
+						},
+						onError = { err ->
+							result.error("ERROR", err.toString(), err)
+						})
+
+
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+		}
+	}
+
 	private val handler = Handler(Looper.getMainLooper())
-	private val executorService = Executors.newSingleThreadExecutor();
+	private val executorService = Executors.newSingleThreadExecutor()
 
 
 	fun genVideoThumbnailList(

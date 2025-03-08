@@ -7,71 +7,115 @@ class AndroidAppUtil {
   factory AndroidAppUtil() => app;
 
   final _channel = const MethodChannel('than_pkg');
+  final _name = 'appUtil';
+
+  Future<int> getSdkInt() async {
+    return await _channel.invokeMethod<int>('$_name/getSdkInt') ?? 0;
+  }
+
+  Future<Map<String, dynamic>> getDeviceInfo() async {
+    final res = await _channel.invokeMethod<Map>('$_name/getDeviceInfo') ?? {};
+    return Map<String, dynamic>.from(res);
+  }
+
+  Future<void> openPdfWithIntent({required String path}) async {
+    await _channel.invokeMethod('$_name/openPdfWithIntent', {'path': path});
+  }
+
+  Future<void> openVideoWithIntent({required String path}) async {
+    await _channel.invokeMethod('$_name/openVideoWithIntent', {'path': path});
+  }
+
+  Future<void> installApk({required String path}) async {
+    await _channel.invokeMethod('$_name/installApk', {'path': path});
+  }
 
   Future<void> openUrl({required String url}) async {
-    await _channel.invokeMethod('openUrl', {'url': url});
+    await _channel.invokeMethod('$_name/openUrl', {'url': url});
+  }
+
+  Future<void> showToast(String message) async {
+    await _channel.invokeMethod('$_name/showToast', {'message': message});
   }
 
   Future<void> hideFullScreen() async {
-    await _channel.invokeMethod('hideFullScreen');
+    await _channel.invokeMethod('$_name/hideFullScreen');
   }
 
   Future<void> showFullScreen() async {
-    await _channel.invokeMethod('showFullScreen');
+    await _channel.invokeMethod('$_name/showFullScreen');
+  }
+
+  Future<bool> isFullScreen() async {
+    return await _channel.invokeMethod<bool>('$_name/isFullScreen') ?? false;
   }
 
   Future<List<Map<String, dynamic>>> getInstalledAppsList() async {
-    final res = await _channel.invokeMethod<List>('getInstalledAppsList') ?? [];
+    final res =
+        await _channel.invokeMethod<List>('$_name/getInstalledAppsList') ?? [];
     return res.map((map) => Map<String, dynamic>.from(map)).toList();
   }
 
   Future<int> getBatteryLevel() async {
-    return await _channel.invokeMethod<int>('getBatteryLevel') ?? 0;
+    return await _channel.invokeMethod<int>('$_name/getBatteryLevel') ?? 0;
   }
 
   Future<bool> isInternetConnected() async {
-    return await _channel.invokeMethod<bool>('isInternetConnected') ?? false;
+    return await _channel.invokeMethod<bool>('$_name/isInternetConnected') ??
+        false;
   }
 
   Future<bool> isDarkModeEnabled() async {
-    return await _channel.invokeMethod<bool>('isDarkModeEnabled') ?? false;
+    return await _channel.invokeMethod<bool>('$_name/isDarkModeEnabled') ??
+        false;
   }
 
   Future<String> getFilesDir() async {
-    return await _channel.invokeMethod<String>('getFilesDir') ?? '';
+    return await _channel.invokeMethod<String>('$_name/getFilesDir') ?? '';
   }
 
   Future<String> getExternalFilesDir() async {
-    return await _channel.invokeMethod<String>('getExternalFilesDir') ?? '';
+    return await _channel.invokeMethod<String>('$_name/getExternalFilesDir') ??
+        '';
   }
 
   Future<String> getAppExternalPath() async {
-    return await _channel.invokeMethod<String>('getAppExternalPath') ?? '';
+    return await _channel.invokeMethod<String>('$_name/getAppExternalPath') ??
+        '';
   }
 
   Future<void> requestOrientation({
     required ScreenOrientationTypes type,
     bool isReverse = false,
   }) async {
-    await _channel.invokeMethod('requestOrientation', {
+    await _channel.invokeMethod('$_name/requestOrientation', {
       'type': type,
       'reverse': isReverse,
     });
   }
 
-  Future<bool> checkOrientation() async {
-    return await _channel.invokeMethod<bool>('checkOrientation') ?? false;
+  Future<ScreenOrientationTypes?> checkOrientation() async {
+    final res = await _channel.invokeMethod<String>('$_name/checkOrientation');
+    if (res == null) return null;
+    if (res == ScreenOrientationTypes.Portrait.name) {
+      return ScreenOrientationTypes.Portrait;
+    } else if (res == ScreenOrientationTypes.Landscape.name) {
+      return ScreenOrientationTypes.Landscape;
+    }
+    return null;
   }
 
   Future<String> getPlatformVersion() async {
-    return await _channel.invokeMethod<String>('getPlatformVersion') ?? '';
+    return await _channel.invokeMethod<String>('$_name/getPlatformVersion') ??
+        '';
   }
 
   Future<void> toggleKeepScreenOn({required bool isKeep}) async {
-    await _channel.invokeMethod('toggleKeepScreenOn', {'is_keep': isKeep});
+    await _channel
+        .invokeMethod('$_name/toggleKeepScreenOn', {'is_keep': isKeep});
   }
 
   Future<String> getDeviceId() async {
-    return await _channel.invokeMethod<String>('getDeviceId') ?? '';
+    return await _channel.invokeMethod<String>('$_name/getDeviceId') ?? '';
   }
 }

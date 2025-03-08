@@ -1,6 +1,42 @@
-## 1.6.1
+## 1.6.2
+
 ### Added
+
+## Linux
+- Added `ThanPkg.linux`
+```Dart
+ThanPkg.linux.thumbnail.*;
+ThanPkg.linux.wifi.*
+```
+
+## Android
+- ThanPkg.android.app
+
+```Dart
+//android xml permission needed -> loop up README.md 
+Future<void> openPdfWithIntent({required String path})
+Future<void> openVideoWithIntent({required String path})
+Future<void> installApk({required String path})
+
+Future<Map<String, dynamic>> getDeviceInfo()
+Future<void> showToast(String message)
+Future<int> getSdkInt()
+```
+
+### Fixed
+
+- ThanPkg.platform
+
+```Dart
+Future<void> genPdfCover({required String outDirPath,required List<String> pdfPathList,int iconSize = 300})
+```
+
+## 1.6.1
+
+### Added
+
 - ThanPkg.android.thumbnail
+
 ```Dart
 Future<void> genVideoThumbnailList({
     required String outDirPath,
@@ -26,6 +62,7 @@ Future<int> getPdfPageCount({required String pdfPath})
 ```
 
 - ThanPkg.android.permission
+
 ```Dart
 Future<void> checkCanRequestPackageInstallsPermission
 Future<bool> isPackageInstallPermission()
@@ -37,19 +74,24 @@ Future<void> requestPackageInstallPermission()
 Future<void> requestCameraPermission()
 Future<void> requestLocationPermission()
 ```
+
 - ThanPkg.android.camera
+
 ```Dart
 Future<String> openCamera()
 ```
 
 - ThanPkg.android.wifi
+
 ```Dart
 Future<String> getWifiSSID()
 Future<void> getLocalIpAddress()
 Future<void> getWifiAddress()
 Future<List<String>> getWifiAddressList()
 ```
+
 - ThanPkg.android.app
+
 ```Dart
 Future<void> openUrl({required String url})
 Future<void> hideFullScreen()
@@ -69,34 +111,42 @@ Future<String> getDeviceId()
 ```
 
 ## 1.6.0
-## Added 
+
+## Added
+
 - android native method
 - `ThanPkg.android.*`
 
 ## Fixed
-- `ThanPkg.platform.genVideoCover` thread error
 
+- `ThanPkg.platform.genVideoCover` thread error
 
 ## 1.5.4
 
-## Added 
+## Added
+
 - `Future<PackageInfo> getPackageInfo()` add package_info_plus package ထည့်ထား
 
 ## Fixed
+
 - `Future<void> genVideoCover({
-    required String outDirPath,
-    required List<String> videoPathList,
-    int iconSize = 300,
-  })` fixed error - error ပြန်ပြင်ပြီးပါပြီ။ 
+  required String outDirPath,
+  required List<String> videoPathList,
+  int iconSize = 300,
+})` fixed error - error ပြန်ပြင်ပြီးပါပြီ။
 
 ## 1.5.3
+
 ## Fixed
+
 - `genPdfCover()` linux platfrom -> override gen png
 - `windowManagerensureInitialized()` methodUnimplementedError() -> fixed
 - `isStoragePermissionGranted()` methodUnimplementedError() -> fixed
 
 ## 1.5.1
+
 ### Added
+
 - added for linux,
 - ensure do it. `windowManagerensureInitialized();`
 - `toggleFullScreen(isFullScreen: true);`

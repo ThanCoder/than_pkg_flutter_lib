@@ -4,15 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:than_pkg/android_pkg/android_pkg.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
-import 'package:than_pkg/android_pkg/than_pkg_android.dart';
-import 'package:than_pkg/than_pkg_interface.dart';
-import 'package:than_pkg/linux_pkg/than_pkg_linux.dart';
+import 'package:than_pkg/linux_pkg/linux_pkg.dart';
+import 'package:than_pkg/platforms/than_pkg_android.dart';
+import 'package:than_pkg/interfaces/than_pkg_interface.dart';
+import 'package:than_pkg/platforms/than_pkg_linux.dart';
 import 'package:window_manager/window_manager.dart';
 
 class ThanPkg implements ThanPkgInterface {
   //singleton
   static final ThanPkg _instance = _createInstance();
   static ThanPkg get platform => _instance;
+
   static ThanPkg _createInstance() {
     if (Platform.isAndroid) {
       return ThanPkgAndroid();
@@ -33,6 +35,7 @@ class ThanPkg implements ThanPkgInterface {
   // class //
   //permission
   static AndroidPkg get android => AndroidPkg.android;
+  static LinuxPkg get linux => LinuxPkg.linux;
 
   //window mangager
   static Future<void> windowManagerensureInitialized() async {
@@ -141,17 +144,12 @@ class ThanPkg implements ThanPkgInterface {
   ///
   /// ### Example Usage:
   /// ```dart
-  /// bool success = await openUrl(url: 'https://flutter.dev');
-  /// if (success) {
-  ///   print('URL opened successfully');
-  /// } else {
-  ///   print('Failed to open URL');
-  /// }
+  /// await openUrl(url: 'https://flutter.dev');
   /// ```
   ///
   /// This method should be implemented to provide actual functionality.
   @override
-  Future<bool> openUrl({required String url}) {
+  Future<void> openUrl({required String url}) {
     // TODO: Implement openUrl method.
     throw UnimplementedError();
   }
@@ -334,10 +332,11 @@ class ThanPkg implements ThanPkgInterface {
   ///
   /// This method should be implemented to provide actual functionality.
   @override
-  Future<void> genVideoCover(
-      {required Comparable<String> outDirPath,
-      required List<String> videoPathList,
-      int iconSize = 300}) {
+  Future<void> genVideoCover({
+    required String outDirPath,
+    required List<String> videoPathList,
+    int iconSize = 300,
+  }) {
     // TODO: implement getVideoCover
     throw UnimplementedError();
   }

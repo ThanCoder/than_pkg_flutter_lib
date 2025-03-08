@@ -8,6 +8,7 @@ class AndroidCamera {
   factory AndroidCamera() => camera;
 
   final _channel = const MethodChannel('than_pkg');
+  final _name = 'cameraUtil';
 
   void _cameraListener({required void Function(String imageUri) callback}) {
     _channel.setMethodCallHandler((call) async {
@@ -26,13 +27,10 @@ class AndroidCamera {
       },
     );
     try {
-      await _channel.invokeMethod('openCamera');
+      await _channel.invokeMethod('$_name/openCamera');
     } catch (e) {
       completer.completeError(e);
     }
     return completer.future;
   }
-  // Future<void> openCamera() async {
-  //   await _channel.invokeMethod('openCamera');
-  // }
 }

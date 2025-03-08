@@ -6,15 +6,15 @@ class AndroidThumbnail {
   factory AndroidThumbnail() => thumbnail;
 
   final _channel = const MethodChannel('than_pkg');
-
-  //video
+  final _namePdf = 'pdfUtil';
+  final _nameVideo = 'videoUtil';
 
   Future<void> genVideoThumbnailList({
     required String outDirPath,
     required List<String> videoPathList,
     int iconSize = 300,
   }) async {
-    await _channel.invokeMethod('genVideoThumbnailList', {
+    await _channel.invokeMethod('$_nameVideo/genVideoThumbnailList', {
       'path_list': videoPathList,
       'out_dir_path': outDirPath,
       'icon_size': iconSize,
@@ -25,7 +25,8 @@ class AndroidThumbnail {
     required String outPath,
     required String videoPath,
   }) async {
-    return await _channel.invokeMethod<String>('genVideoThumbnail', {
+    return await _channel
+        .invokeMethod<String>('$_nameVideo/genVideoThumbnail', {
       'video_path': videoPath,
       'out_path': outPath,
     });
@@ -37,7 +38,7 @@ class AndroidThumbnail {
     required List<String> pdfPathList,
     int iconSize = 300,
   }) async {
-    await _channel.invokeMethod('genPdfCoverList', {
+    await _channel.invokeMethod('$_namePdf/genPdfCoverList', {
       'out_dir_path': outDirPath,
       'pdf_path_list': pdfPathList,
       'size': iconSize,
@@ -50,7 +51,7 @@ class AndroidThumbnail {
     int imageSize = -1, // -1 is pdf.width&& pdf.height
     int pageIndex = 0, //0 base
   }) async {
-    return await _channel.invokeMethod<String>('genPdfImage', {
+    return await _channel.invokeMethod<String>('$_namePdf/genPdfImage', {
           'pdf_path': pdfPath,
           'out_path': outPath,
           'page_index': pageIndex,
@@ -60,7 +61,7 @@ class AndroidThumbnail {
   }
 
   Future<int> getPdfPageCount({required String pdfPath}) async {
-    return await _channel.invokeMethod<int>('getPdfPageCount', {
+    return await _channel.invokeMethod<int>('$_namePdf/getPdfPageCount', {
           'pdf_path': pdfPath,
         }) ??
         0;

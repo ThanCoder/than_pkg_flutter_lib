@@ -1,11 +1,14 @@
 package than.plugin.than_pkg
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.core.content.FileProvider
+import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.MethodChannel.Result
 import java.io.File
 
 
@@ -31,7 +34,13 @@ AndroidManifest.xml >  <application> အဲထဲမှာထည့် <applicat
 */
 
 object TProvider {
-	fun openPdfWithIntent(filePath: String, context: android.content.Context) {
+	fun callCheck(call: MethodCall, result: Result, context: Context, activity: Activity?) {
+		val method = call.method.replace("tProvider/", "")
+		when (method) {
+
+		}
+	}
+	fun openPdfWithIntent(filePath: String, context: Context) {
 		val file = File(filePath)
 		if (!file.exists()) {
 			Log.e("PDF Open", "File not found: $filePath")

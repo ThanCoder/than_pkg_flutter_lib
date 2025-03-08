@@ -11,12 +11,12 @@ class AndroidWifiUtil {
     return await _channel.invokeMethod<String>('getWifiSSID') ?? '';
   }
 
-  Future<void> getLocalIpAddress() async {
-    await _channel.invokeMethod('getLocalIpAddress') ?? '';
+  Future<String> getLocalIpAddress() async {
+    return await _channel.invokeMethod('getLocalIpAddress') ?? '';
   }
 
-  Future<void> getWifiAddress() async {
-    await _channel.invokeMethod('getWifiAddress');
+  Future<String> getWifiAddress() async {
+    return await _channel.invokeMethod('getWifiAddress') ?? '';
   }
 
   Future<List<String>> getWifiAddressList() async {
