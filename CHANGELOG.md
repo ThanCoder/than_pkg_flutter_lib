@@ -1,3 +1,8 @@
+## 1.6.3
+
+## Fixed
+- `ThanPkg.android.wifi.*` fixed
+
 ## 1.6.2
 
 ### Added

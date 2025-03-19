@@ -1,7 +1,7 @@
 name: than_pkg
 description: android native plugin.it is my personal lib and you can use.this is
   my first lib.
-version: 1.6.2
+version: 1.6.3
 homepage: https://github.com/ThanCoder/than_pkg_flutter_lib
 repository: https://github.com/ThanCoder/than_pkg_flutter_lib
 publish_to: null

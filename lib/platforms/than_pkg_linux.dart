@@ -33,7 +33,7 @@ class ThanPkgLinux extends ThanPkg {
 
   @override
   Future<void> genVideoCover({
-    required Comparable<String> outDirPath,
+    required String outDirPath,
     required List<String> videoPathList,
     int iconSize = 300,
   }) async {

@@ -5,8 +5,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:than_pkg/android_pkg/android_pkg.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/linux_pkg/linux_pkg.dart';
-import 'package:than_pkg/platforms/than_pkg_android.dart';
 import 'package:than_pkg/interfaces/than_pkg_interface.dart';
+import 'package:than_pkg/platforms/than_pkg_android.dart';
 import 'package:than_pkg/platforms/than_pkg_linux.dart';
 import 'package:window_manager/window_manager.dart';
 
