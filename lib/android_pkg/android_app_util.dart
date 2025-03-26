@@ -89,7 +89,7 @@ class AndroidAppUtil {
     bool isReverse = false,
   }) async {
     await _channel.invokeMethod('$_name/requestOrientation', {
-      'type': type,
+      'type': type.name,
       'reverse': isReverse,
     });
   }
@@ -97,12 +97,13 @@ class AndroidAppUtil {
   Future<ScreenOrientationTypes?> checkOrientation() async {
     final res = await _channel.invokeMethod<String>('$_name/checkOrientation');
     if (res == null) return null;
-    if (res == ScreenOrientationTypes.Portrait.name) {
-      return ScreenOrientationTypes.Portrait;
-    } else if (res == ScreenOrientationTypes.Landscape.name) {
-      return ScreenOrientationTypes.Landscape;
-    }
-    return null;
+    return ScreenOrientationTypesExtension.getType(res);
+  }
+
+  Future<ScreenOrientationTypes?> getOrientation() async {
+    final res = await _channel.invokeMethod<String>('$_name/checkOrientation');
+    if (res == null) return null;
+    return ScreenOrientationTypesExtension.getType(res);
   }
 
   Future<String> getPlatformVersion() async {

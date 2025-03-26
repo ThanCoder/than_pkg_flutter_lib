@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
 
 void main() async {
@@ -32,10 +33,17 @@ class _MyAppState extends State<MyApp> {
 
   void _test() async {
     try {
-      // if (!await ThanPkg.android.permission.isCameraPermission()) {
-      //   await ThanPkg.android.permission.requestCameraPermission();
-      //   return;
-      // }
+      final type = await ThanPkg.android.app.getOrientation();
+      if (type == null) return;
+      if (type == ScreenOrientationTypes.Portrait) {
+        await ThanPkg.android.app
+            .requestOrientation(type: ScreenOrientationTypes.Landscape);
+        await ThanPkg.android.app.showFullScreen();
+      } else {
+        ThanPkg.android.app
+            .requestOrientation(type: ScreenOrientationTypes.Portrait);
+        await ThanPkg.android.app.hideFullScreen();
+      }
     } catch (e) {
       debugPrint(e.toString());
     }

@@ -1,3 +1,11 @@
+## 1.6.4
+
+## Added
+- `ThanPkg.android.app.getOrientation` old method -> `ThanPkg.android.app.checkOrientation`
+
+## Fixed
+- `ThanPkg.android.app.requestOrientation` fixed
+
 ## 1.6.3
 
 ## Fixed

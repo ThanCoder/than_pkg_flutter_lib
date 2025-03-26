@@ -1,3 +1,19 @@
+### Android ScreenOrientation
+
+```Dart
+final type = await ThanPkg.android.app.getOrientation();
+if (type == null) return;
+if (type == ScreenOrientationTypes.Portrait) {
+await ThanPkg.android.app
+    .requestOrientation(type: ScreenOrientationTypes.Landscape);
+await ThanPkg.android.app.showFullScreen();
+} else {
+ThanPkg.android.app
+    .requestOrientation(type: ScreenOrientationTypes.Portrait);
+await ThanPkg.android.app.hideFullScreen();
+}
+```
+
 ### Added
 
 ```xml
@@ -10,7 +26,9 @@
 
 </application>
 ```
+
 - for above android xml code
+
 ```Dart
 Future<void> openPdfWithIntent({required String path})
 Future<void> openVideoWithIntent({required String path})
