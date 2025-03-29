@@ -1,3 +1,20 @@
+### launch
+- `ThanPkg.linux.app.launch`
+- `ThanPkg.platform.launch`
+
+- Ubuntu/Debian
+```bash
+sudo apt install xdg-utils
+```
+- Arch
+```bash
+sudo pacman -S xdg-utils
+```
+- Fedora
+```bash
+sudo dnf install xdg-utils
+```
+
 ### Android ScreenOrientation
 
 ```Dart

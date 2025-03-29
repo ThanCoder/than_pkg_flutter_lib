@@ -1,3 +1,10 @@
+## 1.6.5
+
+## Added
+- `ThanPkg.linux.app.*`
+- `ThanPkg.linux.app.launch`
+- `ThanPkg.platform.launch`
+
 ## 1.6.4
 
 ## Added

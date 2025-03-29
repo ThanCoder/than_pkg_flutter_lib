@@ -42,4 +42,5 @@ abstract class ThanPkgInterface {
   Future<String?> getWifiSSID();
 
   Future<PackageInfo> getPackageInfo();
+  Future<void> launch(String source);
 }

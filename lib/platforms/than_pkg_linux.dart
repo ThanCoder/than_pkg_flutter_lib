@@ -59,4 +59,9 @@ class ThanPkgLinux extends ThanPkg {
   Future<List<String>> getWifiAddressList() async {
     return await ThanPkg.linux.wifi.getWifiAddressList();
   }
+
+  @override
+  Future<void> launch(String source) async {
+    await ThanPkg.linux.app.launch(source);
+  }
 }

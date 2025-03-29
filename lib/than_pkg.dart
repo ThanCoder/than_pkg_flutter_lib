@@ -539,4 +539,10 @@ class ThanPkg implements ThanPkgInterface {
   Future<PackageInfo> getPackageInfo() async {
     return await PackageInfo.fromPlatform();
   }
+
+  @override
+  Future<void> launch(String source) {
+    // TODO: implement launch
+    throw UnimplementedError();
+  }
 }

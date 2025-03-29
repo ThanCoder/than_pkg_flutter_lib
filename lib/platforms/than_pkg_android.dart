@@ -138,4 +138,17 @@ class ThanPkgAndroid extends ThanPkg {
       await ThanPkg.android.app.hideFullScreen();
     }
   }
+
+  @override
+  Future<void> launch(String source) async {
+    if (source.startsWith('http')) {
+      await ThanPkg.android.app.openUrl(url: source);
+    }
+    if (source.endsWith('.mp4')) {
+      await ThanPkg.android.app.openVideoWithIntent(path: source);
+    }
+    if (source.endsWith('.pdf')) {
+      await ThanPkg.android.app.openPdfWithIntent(path: source);
+    }
+  }
 }
