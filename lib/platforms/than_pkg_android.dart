@@ -1,5 +1,6 @@
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/types/src_dist_type.dart';
 
 class ThanPkgAndroid extends ThanPkg {
   @override
@@ -150,5 +151,31 @@ class ThanPkgAndroid extends ThanPkg {
     if (source.endsWith('.pdf')) {
       await ThanPkg.android.app.openPdfWithIntent(path: source);
     }
+  }
+
+  @override
+  Future<void> genVideoThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  }) async {
+    await ThanPkg.android.thumbnail.genVideoThumbnail2(
+      pathList: pathList,
+      isOverride: isOverride,
+      iconSize: iconSize,
+    );
+  }
+
+  @override
+  Future<void> genPdfThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  }) async {
+    await ThanPkg.android.thumbnail.genPdfThumbnail(
+      pathList: pathList,
+      isOverride: isOverride,
+      iconSize: iconSize,
+    );
   }
 }

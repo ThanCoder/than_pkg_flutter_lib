@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/types/src_dist_type.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,8 +37,33 @@ class _MyAppState extends State<MyApp> {
 
   void _test() async {
     try {
-      // ThanPkg.linux.app.launch('/home/thancoder/Videos/【GMV】- BOSS B_TCH.mp4');
-      ThanPkg.platform.launch('/home/thancoder/Videos/【GMV】- BOSS B_TCH.mp4');
+      if (Platform.isAndroid) {
+        if (!await ThanPkg.android.permission.isStoragePermissionGranted()) {
+          await ThanPkg.android.permission.requestStoragePermission();
+          return;
+        }
+      }
+
+      final path = await ThanPkg.platform.getAppExternalPath();
+
+      await ThanPkg.platform.genPdfThumbnail(pathList: [
+        SrcDistType(src: '$path/Download/1-50.pdf', dist: '$path/test.png'),
+      ]);
+      await ThanPkg.platform.genVideoThumbnail(pathList: [
+        SrcDistType(
+            src: '$path/Download/catch.mp4', dist: '$path/catch-video.png'),
+      ]);
+
+      // final path = '/home/thancoder/Videos/【GMV】- BOSS B_TCH.mp4';
+      // await ThanPkg.platform.genVideoThumbnail(pathList: [
+      //   SrcDistType(src: path, dist: '/home/thancoder/Videos/test.png')
+      // ]);
+      // await ThanPkg.platform.genPdfThumbnail(pathList: [
+      //   SrcDistType(
+      //       src: '/home/thancoder/Downloads/mmbook/သရက်စိုက်ပျိုးနည်း.pdf',
+      //       dist: '/home/thancoder/Downloads/mmbook/test.png'),
+      // ]);
+      print('success');
     } catch (e) {
       debugPrint(e.toString());
     }

@@ -1,3 +1,11 @@
+## 1.6.6
+
+## Added
+- `ThanPkg.platform.genVideoThumbnail`
+- `ThanPkg.platform.genPdfThumbnail`
+- `ThanPkg.android.thumbnail.genVideoThumbnail2`
+- `ThanPkg.linux.thumbnail.genPdfThumbnail`
+
 ## 1.6.5
 
 ## Added

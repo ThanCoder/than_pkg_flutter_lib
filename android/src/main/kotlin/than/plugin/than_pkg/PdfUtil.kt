@@ -1,5 +1,6 @@
 package than.plugin.than_pkg
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
@@ -17,7 +18,24 @@ object PdfUtil {
 	fun callCheck(call: MethodCall, result: Result, context: Context, activity: Activity?) {
 		val method = call.method.replace("pdfUtil/", "")
 		when (method) {
-//pdf util
+			"genPdfThumbnail" -> {
+				val rawList = call.argument<List<Any>>("path_list")
+				val isOverride = call.argument<Boolean>("is_override")?: false
+				val pathList = rawList?.mapNotNull { item ->
+					(item as? Map<*, *>)
+				}
+				val size = call.argument<Int>("size") ?: 300
+
+				if (pathList != null) {
+					genPdfThumbnail2(pathList = pathList, isOverride = isOverride, size = size, onLoaded = {
+						result.success("success")
+					}, onError = { err ->
+						result.error("ERROR", err.toString(), err)
+					})
+				}
+
+			}
+			//pdf util
 			"genPdfCoverList" -> {
 				val outDirPath = call.argument<String>("out_dir_path")
 				val pdfListPath = call.argument<List<String>>("pdf_path_list")
@@ -31,15 +49,11 @@ object PdfUtil {
 					)
 					return
 				}
-				genPdfCoverList(pathList = pdfListPath,
-					outPath = outDirPath,
-					size = size,
-					onLoaded = {
-						result.success("success")
-					},
-					onError = { err ->
-						result.error("ERROR", err.toString(), err)
-					})
+				genPdfCoverList(pathList = pdfListPath, outPath = outDirPath, size = size, onLoaded = {
+					result.success("success")
+				}, onError = { err ->
+					result.error("ERROR", err.toString(), err)
+				})
 
 			}
 
@@ -70,10 +84,11 @@ object PdfUtil {
 			}
 		}
 	}
+
 	private val handler = Handler(Looper.getMainLooper())
 	private val executorService = Executors.newSingleThreadExecutor()
 
-	fun getPdfPageCount(
+	private fun getPdfPageCount(
 		pdfPath: String,
 		onLoaded: (pageCount: Int) -> Unit,
 		onError: (Exception) -> Unit,
@@ -82,8 +97,7 @@ object PdfUtil {
 			try {
 				// PDF ဖိုင်ဖွင့်ခြင်း
 				val pdfFile = File(pdfPath)
-				val fileDescriptor =
-					ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
+				val fileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
 
 				// PdfRenderer ဖန်တီးခြင်း
 				val pdfRenderer = PdfRenderer(fileDescriptor)
@@ -96,6 +110,7 @@ object PdfUtil {
 
 	}
 
+	@SuppressLint("Range")
 	fun genPdfThumbnail(
 		pdfPath: String,
 		thumbnailPath: String,
@@ -115,8 +130,7 @@ object PdfUtil {
 
 				// PDF ဖိုင်ဖွင့်ခြင်း
 				val pdfFile = File(pdfPath)
-				val fileDescriptor =
-					ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
+				val fileDescriptor = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
 
 				// PdfRenderer ဖန်တီးခြင်း
 				val pdfRenderer = PdfRenderer(fileDescriptor)
@@ -153,7 +167,62 @@ object PdfUtil {
 		}
 	}
 
-	fun genPdfCoverList(
+	private fun genPdfThumbnail2(
+		pathList:  List<Map<*, *>>,
+		size: Int = 300,
+		isOverride: Boolean=false,
+		onLoaded: () -> Unit,
+		onError: (Exception) -> Unit,
+	) {
+		executorService.execute {
+			try {
+				for (path in pathList) {
+					try {
+						if(!isOverride && File(path["dist"].toString()).exists()) continue
+						// PDF ဖိုင်ဖွင့်ခြင်း
+						val pdfFile = File(path["src"].toString())
+						val fileDescriptor =
+							ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY)
+
+						// PdfRenderer ဖန်တီးခြင်း
+						val pdfRenderer = PdfRenderer(fileDescriptor)
+
+						// ပထမဆုံး Page ကိုရယူခြင်း
+						val page = pdfRenderer.openPage(0)
+
+						// Bitmap ဖန်တီးခြင်း (PDF page အရွယ်အစား)
+						val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+
+						// PDF page ကို render လုပ်ခြင်း
+						page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+
+						// Page ကိုပိတ်ခြင်း
+						page.close()
+						pdfRenderer.close()
+
+						// PNG ဖိုင်အဖြစ် Save
+						val pngFile = File(path["dist"].toString())
+						FileOutputStream(pngFile).use { outputStream ->
+							bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+							outputStream.flush()
+						}
+
+					} catch (e: Exception) {
+						e.printStackTrace()
+					}
+				}
+
+				// UI Thread မှာ callback ပြန်ပေးခြင်း
+				handler.post { onLoaded() }
+
+			} catch (e: Exception) {
+				handler.post { onError(e) }
+			}
+		}
+
+	}
+
+	private fun genPdfCoverList(
 		pathList: List<String>,
 		outPath: String,
 		size: Int = 300,

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:than_pkg/android_pkg/android_pkg.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
@@ -8,6 +7,7 @@ import 'package:than_pkg/linux_pkg/linux_pkg.dart';
 import 'package:than_pkg/interfaces/than_pkg_interface.dart';
 import 'package:than_pkg/platforms/than_pkg_android.dart';
 import 'package:than_pkg/platforms/than_pkg_linux.dart';
+import 'package:than_pkg/types/src_dist_type.dart';
 import 'package:window_manager/window_manager.dart';
 
 class ThanPkg implements ThanPkgInterface {
@@ -25,7 +25,7 @@ class ThanPkg implements ThanPkgInterface {
     }
   }
 
-  final channel = const MethodChannel('than_pkg');
+  // final _channel = const MethodChannel('than_pkg');
   //for another class
   // static MethodChannel get getChannel => const MethodChannel('than_pkg');
 
@@ -543,6 +543,26 @@ class ThanPkg implements ThanPkgInterface {
   @override
   Future<void> launch(String source) {
     // TODO: implement launch
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> genPdfThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  }) {
+    // TODO: implement genPdfCover2
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> genVideoThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  }) {
+    // TODO: implement genVideoCover2
     throw UnimplementedError();
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:than_pkg/than_pkg.dart';
+import 'package:than_pkg/types/src_dist_type.dart';
 import 'package:window_manager/window_manager.dart';
 
 class ThanPkgLinux extends ThanPkg {
@@ -63,5 +64,31 @@ class ThanPkgLinux extends ThanPkg {
   @override
   Future<void> launch(String source) async {
     await ThanPkg.linux.app.launch(source);
+  }
+
+  @override
+  Future<void> genVideoThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  }) async {
+    await ThanPkg.linux.thumbnail.genVideoThumbnail(
+      pathList: pathList,
+      isOverride: isOverride,
+      iconSize: iconSize,
+    );
+  }
+
+  @override
+  Future<void> genPdfThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  }) async {
+    await ThanPkg.linux.thumbnail.genPdfThumbnail(
+      pathList: pathList,
+      isOverride: isOverride,
+      iconSize: iconSize,
+    );
   }
 }

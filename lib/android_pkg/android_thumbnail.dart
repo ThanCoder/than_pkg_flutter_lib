@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:than_pkg/types/src_dist_type.dart';
 
 class AndroidThumbnail {
   static final AndroidThumbnail thumbnail = AndroidThumbnail._();
@@ -8,6 +9,34 @@ class AndroidThumbnail {
   final _channel = const MethodChannel('than_pkg');
   final _namePdf = 'pdfUtil';
   final _nameVideo = 'videoUtil';
+
+  // new methods
+
+  Future<void> genVideoThumbnail2({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  }) async {
+    await _channel.invokeMethod('$_nameVideo/genVideoThumbnail2', {
+      'path_list': pathList.map((sd) => sd.toMap()).toList(),
+      'icon_size': iconSize,
+      'is_override': isOverride,
+    });
+  }
+
+  Future<void> genPdfThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  }) async {
+    await _channel.invokeMethod('$_namePdf/genPdfThumbnail', {
+      'path_list': pathList.map((sd) => sd.toMap()).toList(),
+      'size': iconSize,
+      'is_override': isOverride,
+    });
+  }
+
+  // old methods
 
   Future<void> genVideoThumbnailList({
     required String outDirPath,

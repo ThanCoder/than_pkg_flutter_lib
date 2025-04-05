@@ -20,7 +20,32 @@ object VideoUtil {
 	fun callCheck(call: MethodCall, result: Result, context: Context, activity: Activity?) {
 		val method = call.method.replace("videoUtil/", "")
 		when (method) {
-//video thumbnail
+			//new methods
+			"genVideoThumbnail2" -> {
+				try {
+					val rawList = call.argument<List<Any>>("path_list")
+					val isOverride = call.argument<Boolean>("is_override") ?: false
+					val size = call.argument<Int>("size") ?: 300
+					val pathList = rawList?.mapNotNull { item ->
+						(item as? Map<*, *>)
+					}
+
+					if (pathList != null) {
+						genVideoThumbnail2(pathList = pathList,
+							isOverride = isOverride,
+							size = size,
+							onCreated = {
+								result.success("")
+							},
+							onError = { err ->
+								result.error("ERROR", err.toString(), err)
+							})
+					}
+				} catch (err: Exception) {
+					result.error("ERROR", err.toString(), err)
+				}
+			}
+			//video thumbnail
 			"genVideoThumbnailList" -> {
 				try {
 					val pathList = call.argument<List<String>>("path_list") ?: listOf()
@@ -65,7 +90,50 @@ object VideoUtil {
 	private val executorService = Executors.newSingleThreadExecutor()
 
 
-	fun genVideoThumbnailList(
+	private fun genVideoThumbnail2(
+		pathList: List<Map<*, *>>,
+		size: Int = 300,
+		isOverride: Boolean = false,
+		onCreated: () -> Unit,
+		onError: (err: Exception) -> Unit
+	) {
+		executorService.execute {
+			try {
+				for (path in pathList) {
+					try {
+						if (!isOverride && File(path["dist"].toString()).exists()) continue
+
+						val pngFile = File(path["dist"].toString())
+
+						val retriever = MediaMetadataRetriever()
+						retriever.setDataSource(path["src"].toString())
+
+						val bitmap = retriever.getFrameAtTime(
+							getRandomTime(path["src"].toString()),
+							MediaMetadataRetriever.OPTION_CLOSEST_SYNC
+						)
+						retriever.release()
+
+						bitmap?.let {
+
+							FileOutputStream(pngFile.path).use { out ->
+								it.compress(Bitmap.CompressFormat.PNG, 100, out)
+								out.flush()
+							}
+						}
+					} catch (_: Exception) {
+					}
+				}
+
+				handler.post { onCreated() }
+			} catch (e: Exception) {
+				handler.post { onError(e) }
+			}
+		}
+	}
+
+
+	private fun genVideoThumbnailList(
 		pathList: List<String>,
 		outDirPath: String,
 		onCreated: () -> Unit,
@@ -107,7 +175,7 @@ object VideoUtil {
 		}
 	}
 
-	fun genVideoThumbnail(
+	private fun genVideoThumbnail(
 		videoPath: String,
 		outPath: String,
 		onCreated: (imagePath: String) -> Unit,
@@ -139,11 +207,9 @@ object VideoUtil {
 	}
 
 
-
-
 	@Throws(Exception::class)
 	private fun getRandomTime(videoPath: String): Long {
-		var res:Long = 1000000
+		var res: Long = 1000000
 		try {
 			val retriever = MediaMetadataRetriever()
 			retriever.setDataSource(videoPath)
@@ -153,7 +219,8 @@ object VideoUtil {
 
 			val randomTime = Random().nextInt(duration.toInt()).toLong()
 			res = randomTime * 1000 // Convert to microseconds
-		}catch (_:Exception){}
+		} catch (_: Exception) {
+		}
 		return res
 	}
 }

@@ -1,16 +1,35 @@
+### Thumbnil
+
+```Dart
+await ThanPkg.platform.genPdfThumbnail(pathList: [
+SrcDistType(src: '$path/Download/1-50.pdf', dist: '$path/test.png'),
+]);
+
+await ThanPkg.platform.genVideoThumbnail(pathList: [
+SrcDistType(
+    src: '$path/Download/catch.mp4', dist: '$path/catch-video.png'),
+]);
+```
+
 ### launch
+
 - `ThanPkg.linux.app.launch`
 - `ThanPkg.platform.launch`
 
 - Ubuntu/Debian
+
 ```bash
 sudo apt install xdg-utils
 ```
+
 - Arch
+
 ```bash
 sudo pacman -S xdg-utils
 ```
+
 - Fedora
+
 ```bash
 sudo dnf install xdg-utils
 ```

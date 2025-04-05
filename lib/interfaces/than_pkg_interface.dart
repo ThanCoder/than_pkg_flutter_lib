@@ -1,5 +1,6 @@
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
+import 'package:than_pkg/types/src_dist_type.dart';
 
 abstract class ThanPkgInterface {
   Future<List<String>> getWifiAddressList();
@@ -43,4 +44,17 @@ abstract class ThanPkgInterface {
 
   Future<PackageInfo> getPackageInfo();
   Future<void> launch(String source);
+
+  //new methods
+  Future<void> genPdfThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  });
+
+  Future<void> genVideoThumbnail({
+    required List<SrcDistType> pathList,
+    int iconSize = 300,
+    bool isOverride = false,
+  });
 }
