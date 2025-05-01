@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
+import 'package:mime/mime.dart';
 import 'package:than_pkg/enums/screen_orientation_types.dart';
 
 class AndroidAppUtil {
@@ -8,6 +11,40 @@ class AndroidAppUtil {
 
   final _channel = const MethodChannel('than_pkg');
   final _name = 'appUtil';
+
+  ///
+  /// auto choose file and url
+  ///
+  /// is supported url,pdf,video
+  ///
+  Future<void> launch(String source) async {
+    if (source.isEmpty) throw Exception('`source` is empty');
+    if (source.startsWith('http')) {
+      // url
+      await launchUrl(source);
+    } else {
+      //file
+      await launchFile(source);
+    }
+  }
+
+  Future<void> launchFile(String source) async {
+    if (!File(source).existsSync()) throw Exception('`source` is exists');
+    final mime = lookupMimeType(source) ?? '';
+    if (mime.startsWith('video')) {
+      await openVideoWithIntent(path: source);
+      return;
+    }
+    if (mime.startsWith('application/pdf')) {
+      await openPdfWithIntent(path: source);
+      return;
+    }
+    throw Exception('mime:`$mime` not supported');
+  }
+
+  Future<void> launchUrl(String url) async {
+    await _channel.invokeMethod('$_name/openUrl', {'url': url});
+  }
 
   Future<int> getSdkInt() async {
     return await _channel.invokeMethod<int>('$_name/getSdkInt') ?? 0;

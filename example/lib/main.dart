@@ -63,7 +63,6 @@ class _MyAppState extends State<MyApp> {
       //       src: '/home/thancoder/Downloads/mmbook/သရက်စိုက်ပျိုးနည်း.pdf',
       //       dist: '/home/thancoder/Downloads/mmbook/test.png'),
       // ]);
-      print('success');
     } catch (e) {
       debugPrint(e.toString());
     }
@@ -83,6 +82,10 @@ class _MyAppState extends State<MyApp> {
         body: Placeholder(),
         floatingActionButton: FloatingActionButton(
           onPressed: _test,
+          // onPressed: () {
+          //   ThanPkg.platform.launch(
+          //       '/home/thancoder/Downloads/mmbook/သရက်စိုက်ပျိုးနည်း.pdf');
+          // },
           child: Icon(Icons.get_app),
         ),
       ),

@@ -1,3 +1,13 @@
+## 1.6.7
+
+## Added
+- `ThanPkg.android.app.launch`
+- `ThanPkg.android.app.launchUrl`
+- `ThanPkg.android.app.launchFile`
+
+## Fixed
+- `ThanPkg.platform.launch`
+
 ## 1.6.6
 
 ## Added
