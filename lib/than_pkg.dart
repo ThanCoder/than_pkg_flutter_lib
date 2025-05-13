@@ -10,6 +10,10 @@ import 'package:than_pkg/platforms/than_pkg_linux.dart';
 import 'package:than_pkg/types/src_dist_type.dart';
 import 'package:window_manager/window_manager.dart';
 
+export 'extensions/index.dart';
+export 'than_pkg_lib.dart';
+
+
 class ThanPkg implements ThanPkgInterface {
   //singleton
   static final ThanPkg _instance = _createInstance();

@@ -1,3 +1,26 @@
+### Extensions
+
+```Dart
+// extension
+DateTime.now().toParseTime();
+DateTime.now().toTimeAgo();
+//double
+0.0.toFileSizeLabel();
+//FileSystemEntityExtension
+FileSystemEntityExtension.getName(withExt: false)
+
+//PlatformExtension
+PlatformExtension.isDesktop();
+PlatformExtension.isMobile();
+
+//StringExtension
+"".toCaptalize();
+"".getName();
+"".getExt();
+//TextEditingControllerExtension
+TextEditingController().selectAll();
+```
+
 ### Thumbnil
 
 ```Dart

@@ -37,6 +37,25 @@ class _MyAppState extends State<MyApp> {
 
   void _test() async {
     try {
+      // extension
+      DateTime.now().toParseTime();
+      DateTime.now().toTimeAgo();
+      //double
+      0.0.toFileSizeLabel();
+      //FileSystemEntityExtension
+      // FileSystemEntityExtension.getName(withExt: false)
+
+      //PlatformExtension
+      PlatformExtension.isDesktop();
+      PlatformExtension.isMobile();
+
+      //StringExtension
+      "".toCaptalize();
+      "".getName();
+      "".getExt();
+      //TextEditingControllerExtension
+      TextEditingController().selectAll();
+
       if (Platform.isAndroid) {
         if (!await ThanPkg.android.permission.isStoragePermissionGranted()) {
           await ThanPkg.android.permission.requestStoragePermission();

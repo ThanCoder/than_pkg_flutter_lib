@@ -1,3 +1,14 @@
+## 1.7.7
+
+## Added
+- Add Extension classes
+- `DatetimeExtension`
+- `DoubleExtension`
+- `FileSystemEntityExtension`
+- `PlatformExtension`
+- `StringExtension`
+- `TextEditingControllerExtension`
+
 ## 1.6.7
 
 ## Added
