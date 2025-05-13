@@ -1,4 +1,4 @@
-## 1.7.7
+## 2.0.0
 
 ## Added
 - Add Extension classes
