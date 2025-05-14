@@ -1,3 +1,13 @@
+## 2.1.0
+## Added
++ `ThanPkg.appUtil.getParseMinutes(minutes);`
++ `ThanPkg.appUtil.copyText(text);`
++ `ThanPkg.appUtil.pasteText();`
++ `await ThanPkg.appUtil.clearImageCache();`
+
+## Changed
+- `await ThanPkg.windowManagerensureInitialized();` -> `await ThanPkg.instance.init();`
+
 ## 2.0.0
 
 ## Added

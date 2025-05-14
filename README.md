@@ -1,3 +1,11 @@
+### Added Methods
+```Dart
+ThanPkg.appUtil.getParseMinutes(minutes);
+ThanPkg.appUtil.copyText(text);
+ThanPkg.appUtil.pasteText();
+await ThanPkg.appUtil.clearImageCache();
+```
+
 ### Extensions
 
 ```Dart

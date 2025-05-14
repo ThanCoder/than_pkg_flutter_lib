@@ -6,7 +6,8 @@ import 'package:than_pkg/types/src_dist_type.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ThanPkg.windowManagerensureInitialized();
+
+  await ThanPkg.instance.init();
 
   runApp(const MyApp());
 }
@@ -33,6 +34,11 @@ class _MyAppState extends State<MyApp> {
     if (Platform.isAndroid) {
       await ThanPkg.android.app.toggleKeepScreenOn(isKeep: true);
     }
+
+    // ThanPkg.appUtil.getParseMinutes(minutes);
+    // ThanPkg.appUtil.copyText(text);
+    // ThanPkg.appUtil.pasteText();
+    // await ThanPkg.appUtil.clearImageCache();
   }
 
   void _test() async {

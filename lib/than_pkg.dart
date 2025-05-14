@@ -8,16 +8,18 @@ import 'package:than_pkg/interfaces/than_pkg_interface.dart';
 import 'package:than_pkg/platforms/than_pkg_android.dart';
 import 'package:than_pkg/platforms/than_pkg_linux.dart';
 import 'package:than_pkg/types/src_dist_type.dart';
+import 'package:than_pkg/utils/app_util.dart';
 import 'package:window_manager/window_manager.dart';
 
 export 'extensions/index.dart';
 export 'than_pkg_lib.dart';
-
+export 'utils/index.dart';
 
 class ThanPkg implements ThanPkgInterface {
   //singleton
-  static final ThanPkg _instance = _createInstance();
-  static ThanPkg get platform => _instance;
+  static final ThanPkg instance = _createInstance();
+  static ThanPkg get platform => instance;
+  // factory ThanPkg() => instance;
 
   static ThanPkg _createInstance() {
     if (Platform.isAndroid) {
@@ -29,10 +31,6 @@ class ThanPkg implements ThanPkgInterface {
     }
   }
 
-  // final _channel = const MethodChannel('than_pkg');
-  //for another class
-  // static MethodChannel get getChannel => const MethodChannel('than_pkg');
-
   ThanPkg(); //private consturctor
   //unname constructor
   ThanPkg._();
@@ -40,9 +38,9 @@ class ThanPkg implements ThanPkgInterface {
   //permission
   static AndroidPkg get android => AndroidPkg.android;
   static LinuxPkg get linux => LinuxPkg.linux;
+  static AppUtil get appUtil => AppUtil.instance;
 
-  //window mangager
-  static Future<void> windowManagerensureInitialized() async {
+  Future<void> init() async {
     if (Platform.isLinux) {
       await windowManager.ensureInitialized();
     }

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:than_pkg/than_pkg.dart';
 import 'package:than_pkg/types/src_dist_type.dart';
-import 'package:window_manager/window_manager.dart';
 
 class ThanPkgLinux extends ThanPkg {
   @override
